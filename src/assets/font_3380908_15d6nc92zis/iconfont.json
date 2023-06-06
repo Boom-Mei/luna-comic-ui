@@ -1,0 +1,93 @@
+{
+  "id": "3380908",
+  "name": "B站漫画",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "23206655",
+      "name": "编辑",
+      "font_class": "bianji",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
+      "icon_id": "963830",
+      "name": "设置",
+      "font_class": "shezhi",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "9592761",
+      "name": "邮箱",
+      "font_class": "youxiang",
+      "unicode": "e678",
+      "unicode_decimal": 59000
+    },
+    {
+      "icon_id": "18166528",
+      "name": "衣服,服装",
+      "font_class": "clothes",
+      "unicode": "e8c7",
+      "unicode_decimal": 59591
+    },
+    {
+      "icon_id": "6539418",
+      "name": "分享",
+      "font_class": "fenxiang",
+      "unicode": "e680",
+      "unicode_decimal": 59008
+    },
+    {
+      "icon_id": "24847090",
+      "name": "换一批",
+      "font_class": "huanyipi",
+      "unicode": "e675",
+      "unicode_decimal": 58997
+    },
+    {
+      "icon_id": "3816869",
+      "name": "搜索",
+      "font_class": "sousuo",
+      "unicode": "e71a",
+      "unicode_decimal": 59162
+    },
+    {
+      "icon_id": "23034095",
+      "name": "房子3",
+      "font_class": "fangzi3",
+      "unicode": "e8bb",
+      "unicode_decimal": 59579
+    },
+    {
+      "icon_id": "2771490",
+      "name": "哔哩哔哩动画",
+      "font_class": "bilibilidonghua",
+      "unicode": "e8af",
+      "unicode_decimal": 59567
+    },
+    {
+      "icon_id": "8338682",
+      "name": "分类",
+      "font_class": "fenlei",
+      "unicode": "e6c6",
+      "unicode_decimal": 59078
+    },
+    {
+      "icon_id": "16328040",
+      "name": "书架",
+      "font_class": "shujia",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
+      "icon_id": "5618779",
+      "name": "小房子",
+      "font_class": "xiaofangzi",
+      "unicode": "e672",
+      "unicode_decimal": 58994
+    }
+  ]
+}
