@@ -1,13 +1,9 @@
 <template>
   <div class="to_do">
     <!-- <h3>公共组件</h3> -->
+
     <ul v-if="todoList.length" class="todo">
-      <router-link
-        tag="li"
-        :to="`/details/${item.parent_id}`"
-        v-for="item in todoList"
-        :key="item.parent_id"
-      >
+      <router-link tag="li" :to="`/details/${item.parent_id}`" v-for="item in todoList" :key="item.parent_id">
         <van-image :src="item.image + '@200w.jpg'" fit="cover" radius="5px">
           <template v-slot:loading>
             <!-- <van-loading type="spinner" size="20" /> -->
@@ -19,23 +15,16 @@
         <span>
           {{
             item.comic_info.decision || item.comic_info.lastest_short_title
-              ? "更新至" + item.comic_info.lastest_short_title + "话"
-              : null || item.comic_info.main_style_name
+            ? "更新至" + item.comic_info.lastest_short_title + "话"
+            : null || item.comic_info.main_style_name
           }}
         </span>
       </router-link>
     </ul>
 
     <!-- 加载中... -->
-    <van-loading
-      type="spinner"
-      size="24px"
-      text-size="18px"
-      color="skyblue"
-      class="load"
-      style="textAlign: center"
-      v-else
-      >加载中...
+    <van-loading type="spinner" size="24px" text-size="18px" color="skyblue" class="load" style="textAlign: center"
+      v-else>加载中...
     </van-loading>
   </div>
 </template>
@@ -47,15 +36,16 @@ export default {
       type: Array,
       default: () => {
         return null;
-      },
-    },
-  },
+      }
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 .to_do {
   background-color: #fff;
+
   .todo {
     display: flex;
     flex-wrap: wrap;

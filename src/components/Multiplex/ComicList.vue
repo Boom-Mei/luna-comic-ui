@@ -1,16 +1,8 @@
 <template>
   <div class="comic-list">
     <ul v-if="comList" class="hot_main">
-      <router-link
-        tag="li"
-        :to="`/details/${item.id}`"
-        v-for="item in comList"
-        :key="item.id"
-      >
-        <img
-          :src="item.vertical_cover + '@200w.jpg'"
-          v-lazy="item.vertical_cover + '@200w.jpg'"
-        />
+      <router-link tag="li" :to="`/details/${item.id}`" v-for="item in comList" :key="item.id">
+        <img :src="item.vertical_cover + '@200w.jpg'" v-lazy="item.vertical_cover + '@200w.jpg'" />
         <p>{{ item.title }}</p>
         <span>更新至{{ item.last_ord }}话</span>
       </router-link>
@@ -19,19 +11,20 @@
 </template>
 
 <script>
-//引入lodash库 使用其从数组中随机选取几个数据
+// 引入lodash库 使用其从数组中随机选取几个数据
 import _ from "lodash";
 
 export default {
+  components: {},
   props: {
     detailsid: {
       type: String,
-      default: "31351",
-    },
+      default: "31351"
+    }
   },
   data() {
     return {
-      comList: [],
+      comList: []
     };
   },
   created() {
@@ -40,21 +33,18 @@ export default {
   watch: {
     $route() {
       this.$router.go(0);
-      console.log("反应？");
-    },
+    }
   },
-  mounted() {},
+  mounted() { },
   methods: {
     getDate() {
-      this.axios.get("MoreRecommend?comicId=" + this.detailsid).then((re) => {
-        // this.comList = re.recommend_comics.splice(0, 6);
-        this.comList = re.recommend_comics;
+      this.axios.get("MoreRecommend?comicId=" + this.detailsid).then((data) => {
+        // this.comList = data.recommend_comics.splice(0, 6);
+        this.comList = data.recommend_comics;
         this.comList = _.sampleSize(this.comList, [6]);
-        console.log("漫画推荐===>", this.comList);
       });
-    },
-  },
-  components: {},
+    }
+  }
 };
 </script>
 

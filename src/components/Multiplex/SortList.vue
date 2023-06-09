@@ -7,19 +7,8 @@
     {{ isFinishId }} -->
 
     <ul v-if="todoList.length" class="todo">
-      <router-link
-        tag="li"
-        :to="`/details/${to.season_id}`"
-        v-for="to in todoList"
-        :key="to.season_id"
-      >
-        <van-image
-          :src="to.vertical_cover + '@200w.jpg'"
-          fit="cover"
-          radius="5px"
-          width="120"
-          height="138"
-        >
+      <router-link tag="li" :to="`/details/${to.season_id}`" v-for="to in todoList" :key="to.season_id">
+        <van-image :src="to.vertical_cover + '@200w.jpg'" fit="cover" radius="5px" width="120" height="138">
           <template v-slot:loading>
             <img src="@/assets/image/没有.png" class="loadImg" />
           </template>
@@ -34,14 +23,14 @@
         <span>
           {{
             to.total == to.last_ord
-              ? `[完结]共${to.total}话`
-              : `更新至${to.last_short_title}话`
+            ? `[完结]共${to.total}话`
+            : `更新至${to.last_short_title}话`
           }}
         </span>
       </router-link>
     </ul>
     <ul v-else class="todo">
-      <li v-for="(item, index) in 21" :key="index">
+      <li v-for="(item, index) in 9" :key="index">
         <img src="@/assets/image/玩命加载中.png" />
       </li>
     </ul>
@@ -74,12 +63,12 @@ export default {
     isFinishId: {
       type: Number,
       default: -1,
-    },
+    }
   },
   data() {
     return {
       todoList: [],
-      page: 2,
+      page: 2
     };
   },
   created() {
@@ -87,7 +76,6 @@ export default {
   },
   watch: {
     styleId: _.debounce(function () {
-      console.log("分类切换??");
       this.getSort();
       this.$toast.loading({
         message: "加载中...",
@@ -95,7 +83,6 @@ export default {
       });
     }, 200),
     areaId: _.debounce(function () {
-      console.log("分类切换??");
       this.getSort();
       this.$toast.loading({
         message: "加载中...",
@@ -103,7 +90,6 @@ export default {
       });
     }, 200),
     orderId: _.debounce(function () {
-      console.log("分类切换??");
       this.getSort();
       this.$toast.loading({
         message: "加载中...",
@@ -111,7 +97,6 @@ export default {
       });
     }, 200),
     isFreeId: _.debounce(function () {
-      console.log("分类切换??");
       this.getSort();
       this.$toast.loading({
         message: "加载中...",
@@ -119,16 +104,15 @@ export default {
       });
     }, 200),
     isFinishId: _.debounce(function () {
-      console.log("分类切换??");
       this.getSort();
       this.$toast.loading({
         message: "加载中...",
         forbidClick: true,
       });
-    }, 200),
+    }, 200)
   },
   methods: {
-    async getSort(offset = 21) {
+    async getSort(offset = 9) {
       await this.axios
         .get(
           `ClassPage?styleId=${this.styleId}&areaId=${this.areaId}&isFinish=${this.isFinishId}&order=${this.orderId}&pageNum=1&pageSize=300&isFree=${this.isFreeId}`
@@ -141,15 +125,14 @@ export default {
     },
     addMore() {
       this.page++;
-      let offset = 21 * (this.page - 1);
-      console.log(offset);
+      let offset = 9 * (this.page - 1);
       this.getSort(offset);
       this.$toast.loading({
         message: "加载中...",
         forbidClick: true,
       });
     },
-  },
+  }
 };
 </script>
 
@@ -161,11 +144,13 @@ export default {
     color: gray;
     height: 40px;
   }
+
   .todoList {
     width: 100%;
     // padding: 0 7px;
     display: flex;
     flex-wrap: wrap;
+
     li {
       width: 33%;
       padding: 8px;
@@ -173,12 +158,14 @@ export default {
       // height: 197px;
       display: flex;
       flex-direction: column;
+
       .img {
         width: 120px;
         height: 143px;
       }
     }
   }
+
   .todo {
     width: 100%;
     // padding: 0 7px;

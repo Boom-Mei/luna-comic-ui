@@ -61,9 +61,7 @@ export default {
             show: false,
             che1: true,
             che2: true,
-            che3: false,
-            name: '小明',
-
+            che3: false
         }
     },
     // created() { this.getHistoryLogin() },

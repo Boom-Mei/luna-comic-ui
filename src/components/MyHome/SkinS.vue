@@ -7,13 +7,16 @@
 
 <script>
 import ImageS from './ImageS.vue';
+
 export default {
-    data() {
-        return {
-            skin: true,
-        };
-    },
-    components: { ImageS }
+  components: {
+    ImageS
+  },
+  data() {
+    return {
+      skin: true
+    };
+  }
 };
 </script>
 

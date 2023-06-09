@@ -1,6 +1,7 @@
 <template>
   <div class="login">
     <!-- <h3>登录</h3> -->
+
     <div class="top">
       <van-icon name="cross" @click.stop="close" />
       <p>bilibili登录</p>
@@ -32,34 +33,30 @@ export default {
       username: '',
       password: '',
       pattern: /^[A-Za-z0-9]{6}/,
-
       className: 'banner'
     };
   },
   methods: {
-    //关闭
+    // 关闭
     close() {
-      this.$store.commit('changeFlag', false)
+      this.$store.commit('changeFlag', false);
     },
-    //提交
+    // 提交
     onSubmit(values) {
-      console.log('submit', values);
       if (values) {
-        //退出登录页面
-        this.$store.commit('changeFlag', false)
-        //已登录
-        this.$store.commit('changeLogin', true)
-        
+        // 退出登录页面
+        this.$store.commit('changeFlag', false);
+        // 已登录
+        this.$store.commit('changeLogin', true);
       }
-
     },
-    //密码框获取焦点
+    // 密码框获取焦点
     inputing() {
-      this.className = "bannerTo"
+      this.className = "bannerTo";
     },
-    //密码框失去焦点
+    // 密码框失去焦点
     outing() {
-      this.className = "banner"
+      this.className = "banner";
     }
   }
 }
@@ -74,8 +71,8 @@ export default {
   z-index: 8;
   background-color: #fff;
   background: url(@/assets/image/背景2.jpg) no-repeat;
-    background-size: 433px auto;
-    background-position: center 359px;
+  background-size: 433px auto;
+  background-position: center 359px;
 
   .top {
     height: 50px;

@@ -4,34 +4,12 @@
 
     <!-- 轮播图 -->
     <div style="height: 1px"></div>
-    <div
-      class="banner"
-      v-if="slides"
-      :style="{ '--background': 'url(' + imageUrl + ')' }"
-    >
-      <carousel-3d
-        :autoplayTimeout="3000"
-        :perspective="20"
-        :animationSpeed="500"
-        autoplay
-        width="230"
-        height="310"
-        startIndex="3"
-        @before-slide-change="onSlideChange"
-        ref="carouser"
-      >
-        <slide
-          v-for="(item, i) in slides"
-          :index="i"
-          :key="item.id"
-          class="item3d"
-        >
+    <div class="banner" v-if="slides" :style="{ '--background': 'url(' + imageUrl + ')' }">
+      <carousel-3d :autoplayTimeout="3000" :perspective="20" :animationSpeed="500" autoplay width="230" height="310"
+        startIndex="3" @before-slide-change="onSlideChange" ref="carouser">
+        <slide v-for="(item, i) in slides" :index="i" :key="item.id" class="item3d">
           <router-link :to="`/details/${item.numID}`">
-            <img
-              :src="item.image_url + '@200w.jpg'"
-              class="img"
-              v-lazy="item.image_url + '@200w.jpg'"
-            />
+            <img :src="item.image_url + '@200w.jpg'" class="img" v-lazy="item.image_url + '@200w.jpg'" />
           </router-link>
         </slide>
       </carousel-3d>
@@ -42,12 +20,7 @@
       <router-link tag="p" to="/all/1012/今日热门速递">查看全部>></router-link>
     </div>
     <ul v-if="mainlist.length" class="hot_main">
-      <router-link
-        tag="li"
-        :to="`/details/${hot.item_id}`"
-        v-for="hot in mainlist"
-        :key="hot.item_id"
-      >
+      <router-link tag="li" :to="`/details/${hot.item_id}`" v-for="hot in mainlist" :key="hot.item_id">
         <van-image :src="hot.image + '@200w.jpg'" radius="5px">
           <template v-slot:loading>
             <van-loading type="spinner" size="20" />
@@ -59,10 +32,7 @@
       </router-link>
 
       <!-- 换一批 -->
-      <div
-        class="iconfont icon-huanyipi"
-        @click.stop="getDate(Math.floor(Math.random() * 8))"
-      >
+      <div class="iconfont icon-huanyipi" @click.stop="getDate(Math.floor(Math.random() * 8))">
         &nbsp;&nbsp;换一批
       </div>
     </ul>
@@ -76,12 +46,8 @@
     </div>
 
     <ul v-if="newlist.length" class="new_main">
-      <router-link
-        tag="li"
-        :to="`/details/${newitem.item_id}`"
-        v-for="(newitem, index) in newlist"
-        :key="newitem.item_id"
-      >
+      <router-link tag="li" :to="`/details/${newitem.item_id}`" v-for="(newitem, index) in newlist"
+        :key="newitem.item_id">
         <div class="num">No.{{ index + 1 }}</div>
         <div class="img">
           <van-image :src="newitem.image + '@400w.jpg'" radius="5px">
@@ -94,8 +60,8 @@
         <p>{{ newitem.title }}</p>
         <span>{{
           newitem.comic_info.decision
-            ? newitem.comic_info.decision
-            : "更新至" + newitem.comic_info.lastest_short_title + "话"
+          ? newitem.comic_info.decision
+          : "更新至" + newitem.comic_info.lastest_short_title + "话"
         }}</span>
       </router-link>
     </ul>
@@ -111,12 +77,7 @@
     </div>
 
     <ul v-if="onelist" class="hot_main">
-      <router-link
-        tag="li"
-        :to="`/details/${one.item_id}`"
-        v-for="one in onelist"
-        :key="one.item_id"
-      >
+      <router-link tag="li" :to="`/details/${one.item_id}`" v-for="one in onelist" :key="one.item_id">
         <van-image :src="one.image + '@200w.jpg'" radius="5px">
           <template v-slot:loading>
             <van-loading type="spinner" size="20" />
@@ -128,10 +89,7 @@
       </router-link>
 
       <!-- 换一批 -->
-      <div
-        class="iconfont icon-huanyipi"
-        @click.stop="getOne(Math.floor(Math.random() * 8))"
-      >
+      <div class="iconfont icon-huanyipi" @click.stop="getOne(Math.floor(Math.random() * 8))">
         &nbsp;&nbsp;换一批
       </div>
     </ul>
@@ -140,7 +98,7 @@
 </template>
 
 <script>
-//引入3D轮播图
+// 引入3D轮播图
 import { Carousel3d, Slide } from "vue-carousel-3d";
 import LoadingImg from "@/components/Lading/LoadingImg.vue";
 
@@ -148,19 +106,19 @@ export default {
   components: {
     Carousel3d,
     Slide,
-    LoadingImg,
+    LoadingImg
   },
   props: {
     slides: {
       type: Array,
       default: () => {
         return null;
-      },
+      }
     },
     sex: {
       type: String,
       default: "热门",
-    },
+    }
   },
   data() {
     return {
@@ -185,7 +143,6 @@ export default {
 
   methods: {
     onSlideChange(e) {
-      // console.log(e, "--", this.$refs.carouser,this.slides[e].image_url);
       let hotColor = this.slides[e].image_url;
       if (hotColor !== undefined) {
         hotColor = "https://images.weserv.nl/?url=" + hotColor;
@@ -196,23 +153,20 @@ export default {
       console.log(window.localStorage.getItem('homeActive'));
       await this.axios
         .get(`GetHomeSecondaryComics?moduleId=1012&pageNum=${num}&pageSize=6`)
-        .then((re) => {
-          // console.log("热门===>", re);
-          this.mainlist = re.comics;
+        .then((data) => {
+          this.mainlist = data.comics;
         });
       await this.axios
         .get("GetHomeSecondaryComics?moduleId=1018&pageNum=1&pageSize=9")
-        .then((re) => {
-          this.newlist = re.comics;
-          // console.log(this.newlist);
+        .then((data) => {
+          this.newlist = data.comics;
         });
     },
-
     async getOne(num = 1) {
       await this.axios
         .get(`GetHomeSecondaryComics?moduleId=1065&pageNum=${num}&pageSize=6`)
-        .then((re) => {
-          this.onelist = re.comics;
+        .then((data) => {
+          this.onelist = data.comics;
         });
     },
     imgClick(obj) {
@@ -233,13 +187,13 @@ export default {
   background-color: #fff;
   height: 100%;
 
-  /* 轮播图 */
+  // 轮播图
   .banner {
     width: 100%;
     height: 100%;
     position: relative;
     top: -41px;
-    border:none;
+    border: none;
 
     &::before {
       content: "";
@@ -255,6 +209,7 @@ export default {
       background-repeat: no-repeat;
       background-size: cover;
     }
+
     .carousel-3d-container {
       top: 20px;
 
@@ -263,6 +218,7 @@ export default {
         outline: none;
         border-radius: 10px;
       }
+
       .item3d {
         &::before {
           content: "";
@@ -277,6 +233,7 @@ export default {
 
       .carousel-3d-slide.current {
         position: absolute;
+
         &::before {
           content: none;
         }

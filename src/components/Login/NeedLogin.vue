@@ -28,29 +28,24 @@ export default {
         his: {
             type: Boolean,
             default: false
-        },
+        }
     },
     data() {
         return {
-            show: false,
+            show: false
         }
     },
     created() { },
     methods: {
         login() {
-            this.show = true
+            this.show = true;
         },
         cancel() {
-            console.log('取消！！');
-            this.$store.commit('changeFlag', false)
-
+            this.$store.commit('changeFlag', false);
         },
         confirm() {
-            console.log('确定~');
-            this.$store.commit('changeFlag', true)
-
-        },
-
+            this.$store.commit('changeFlag', true);
+        }
     }
 }
 </script>
@@ -63,7 +58,7 @@ export default {
     align-items: center;
     justify-content: center;
 
-    .bgc{
+    .bgc {
         width: 100%;
         margin-top: 10px;
     }

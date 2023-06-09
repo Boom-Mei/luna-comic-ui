@@ -3,18 +3,9 @@
     <!-- <h3>收藏</h3> -->
     <!-- {{ news }} -->
     <!-- 编辑按钮 -->
-    <van-popover
-      theme="dark"
-      v-model="showEdit"
-      trigger="click"
-      :actions="actions"
-      @select="onSelect"
-      placement="left-end"
-      class="edit"
-      :close-on-click-action="false"
-      :close-on-click-outside="false"
-      v-if="!news && bookList"
-    >
+    <van-popover theme="dark" v-model="showEdit" trigger="click" :actions="actions" @select="onSelect"
+      placement="left-end" class="edit" :close-on-click-action="false" :close-on-click-outside="false"
+      v-if="!news && bookList">
       <template #reference>
         <img src="@/assets/image/编辑.png" @click="remove = !remove" />
       </template>
@@ -23,25 +14,15 @@
     <!-- <button @click.stop="addAll" v-show="remove">全选</button>
     <button @click.stop="addEll" v-show="remove">返选</button>
     <button @click.stop="addRem" v-show="remove">取消</button> -->
-    <ToImg :news="news" v-if="news"></ToImg>
+    <need-login :news="news" v-if="news"></need-login>
     <!-- 内容 -->
     <div class="main" v-if="!news">
-      <van-checkbox-group
-        v-model="result"
-        ref="checkboxGroup"
-        class="ul"
-        v-if="remove"
-      >
+      <van-checkbox-group v-model="result" ref="checkboxGroup" class="ul" v-if="remove">
         <li v-for="book in bookList" :key="book.id" :class="{ li: remove }">
           <img :src="book.vertical_cover + '@200w.jpg'" />
           <p>{{ book.title }}</p>
           <!-- <span>未看/{{ book.total }}话</span> -->
-          <van-checkbox
-            :name="book.id"
-            class="input"
-            @click="add(book.id)"
-            v-show="remove"
-          >
+          <van-checkbox :name="book.id" class="input" @click="add(book.id)" v-show="remove">
           </van-checkbox>
         </li>
 
@@ -49,12 +30,7 @@
       </van-checkbox-group>
 
       <div class="ul" v-else>
-        <router-link
-          tag="li"
-          :to="`/details/${book.id}`"
-          v-for="book in bookList"
-          :key="book.id"
-        >
+        <router-link tag="li" :to="`/details/${book.id}`" v-for="book in bookList" :key="book.id">
           <img :src="book.vertical_cover" alt="" />
           <p>{{ book.title }}</p>
           <span>共{{ book.total }}话</span>
@@ -73,11 +49,15 @@
 </template>
 
 <script>
-import ToImg from "../LogIn/ToImg.vue";
+import NeedLogin from "../Login/NeedLogin.vue";
+
 export default {
-  components: { ToImg },
+  components: {
+    NeedLogin
+  },
   data() {
     return {
+      // 是否未登录
       news: true,
       bookList: [],
       result: [],
@@ -87,7 +67,7 @@ export default {
         { text: "全选", icon: "passed" },
         { text: "取消", icon: "warning-o" },
         { text: "删除", icon: "close" },
-      ],
+      ]
     };
   },
   created() {
@@ -107,49 +87,43 @@ export default {
     getBook() {
       this.bookList = this.$store.state.bookList;
     },
-    /* 选择要删除的 */
+    // 选择要删除的
     add(value) {
       console.log("选择漫话id有===>", value);
+      // todo: 自己加的，待验证
+      this.result.add(value);
     },
-    /* 全选 */
+    // 全选
     addAll(e) {
-      console.log("Q");
       this.$refs.checkboxGroup.toggleAll(true);
       console.log(e);
     },
-    /* 反选 */
+    // 反选
     addEll() {
-      console.log("F");
       this.$refs.checkboxGroup.toggleAll();
     },
-    /* 取消 */
+    // 取消
     addRem() {
-      console.log("QX");
       this.$refs.checkboxGroup.toggleAll(false);
     },
-    /* 删除 */
+    // 删除
     removeAll() {
-      console.log(this.result);
       this.$store.commit("removeList", this.result);
       this.getBook();
     },
-
-    /* 编辑按钮 */
+    // 编辑按钮
     onSelect(action) {
       this.$toast(action.text);
       if (action.text == "全选") {
         this.addAll();
-      }
-      if (action.text == "删除") {
+      } else if (action.text == "删除") {
         this.removeAll();
-      }
-      if (action.text == "反选") {
+      } else if (action.text == "反选") {
         this.addEll();
-      }
-      if (action.text == "取消") {
+      } else if (action.text == "取消") {
         this.addRem();
       }
-    },
+    }
   },
 };
 </script>
@@ -166,6 +140,7 @@ export default {
     right: 20px;
     top: 517px;
     z-index: 8;
+
     img {
       width: 100%;
     }
@@ -174,12 +149,15 @@ export default {
   .main {
     height: 85vh;
     overflow: auto;
+
     .ul {
       width: 100%;
       display: flex;
       flex-wrap: wrap;
       padding: 5px;
+
       .li {
+
         // height: 145px;
         &::after {
           content: "";
@@ -231,6 +209,7 @@ export default {
           z-index: 2;
         }
       }
+
       .cha {
         width: 30%;
         height: 145px;

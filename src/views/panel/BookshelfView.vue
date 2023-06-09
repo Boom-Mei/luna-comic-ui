@@ -16,15 +16,19 @@
 <script>
 import CollectBook from "@/components/CollectBook/CollectBook.vue";
 import HistoryBook from "../../components/CollectBook/HistoryBook.vue";
+
 export default {
+  components: {
+    CollectBook,
+    HistoryBook
+  },
   data() {
     return {
-      active: "",
+      active: ""
     };
   },
-  components: { CollectBook, HistoryBook },
-  watch:{
-    active(){
+  watch: {
+    active() {
       let name = window.localStorage.getItem('BookActive')
       if (name) {
         this.active = name;
@@ -33,11 +37,10 @@ export default {
   },
   methods: {
     onClick(name) {
-      console.log(name);
       this.active = name
       localStorage.setItem("BookActive", name);
-    },
-  },
+    }
+  }
 };
 </script>
 

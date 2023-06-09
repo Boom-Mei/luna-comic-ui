@@ -1,42 +1,28 @@
 <template>
   <div class="details" v-if="mainList.horizontal_cover">
     <!-- <h3>内容详情</h3> -->
+
     <!-- 头部 -->
     <van-sticky>
-      <van-nav-bar
-        title=""
-        left-text=""
-        left-arrow
-        class="tab_main"
-        :fixed="true"
-        @click-left="onClickLeft"
-        :border="false"
-      >
+      <van-nav-bar title="" left-text="" left-arrow class="tab_main" :fixed="true" @click-left="onClickLeft"
+        :border="false">
         <template #right>
-          <span
-            class="iconfont icon-fenxiang"
-            @click.stop="showShare = true"
-          ></span>
+          <span class="iconfont icon-fenxiang" @click.stop="showShare = true"></span>
         </template>
       </van-nav-bar>
     </van-sticky>
+
     <!-- banner图 -->
     <div class="banner">
       <van-image :src="mainList.horizontal_cover">
         <template v-slot:loading>
           <!-- <van-loading type="spinner" size="20" /> -->
-          <img
-            src="@/assets/image/加载失败.png"
-            style="width: 375px,height: 200px"
-          />
+          <img src="@/assets/image/加载失败.png" style="width: 375px,height: 200px" />
         </template>
       </van-image>
       <!-- <img :src="mainList.horizontal_cover" alt="" /> -->
       <!-- 追漫按钮 -->
-      <div
-        :class="['chase', { yes: flag }, { no: !flag }]"
-        @click.stop="chase(mainList)"
-      >
+      <div :class="['chase', { yes: flag }, { no: !flag }]" @click.stop="chase(mainList)">
         {{ flag ? "已追" : "追漫" }}
       </div>
     </div>
@@ -49,15 +35,8 @@
     <!-- 评分星星 -->
     <div class="star">
       <span> {{ score }}</span>
-      <van-rate
-        v-model="value"
-        allow-half
-        color="#ffd21e"
-        void-icon="star"
-        :size="15"
-        readonly
-      />
-      <em>阅读指数：</em>
+      <van-rate v-model="value" allow-half color="#ffd21e" void-icon="star" :size="15" readonly />
+      <em>阅读数：</em>
       <span>{{ watch }}</span>
     </div>
 
@@ -82,14 +61,14 @@
 
       <div class="worker">
         作者：<span v-for="(work, index) in mainList.author_name" :key="index">
-          {{ work }} 、</span
-        >
+          {{ work }} 、</span>
       </div>
 
       <div class="text_main">简介：{{ mainList.classic_lines }}</div>
     </div>
 
     <!-- 评论和推荐 -->
+    <!-- todo: 这里如果没有评论的话，连推荐也显示不出来了 -->
     <div class="comment" v-if="comList">
       <van-tabs scrollspy sticky>
         <van-tab title="互动点评">
@@ -106,8 +85,7 @@
           <!-- 讨论区 -->
           <div class="forum" v-if="num" @click.stop="showComment = true">
             <p>漫画讨论区</p>
-            <span
-              >{{ num }}条评论等你来看
+            <span>{{ num }}条评论等你来看
               <van-icon name="arrow" />
             </span>
           </div>
@@ -118,7 +96,7 @@
           <div class="c_top">
             <h3>更多推荐</h3>
           </div>
-          <comic-list :page="page"></comic-list>
+          <comic-list></comic-list>
         </van-tab>
       </van-tabs>
     </div>
@@ -131,20 +109,10 @@
         <span>目录</span>
       </div>
 
+      <!-- index + 1 < 10 ? "0" + "0" + (index + 1) : index + 1 && index + 1 < 100 ? "0" + (index + 1) : index + 1 }} -->
       <ul class="top_all" v-if="mainList">
-        <router-link
-          tag="li"
-          :to="`/content/${item.id}/${detailsid}`"
-          v-for="(item, index) in chapter"
-          :key="item.id"
-        >
-          {{
-            index + 1 < 10
-              ? "0" + "0" + (index + 1)
-              : index + 1 && index + 1 < 100
-              ? "0" + (index + 1)
-              : index + 1
-          }}
+        <router-link tag="li" :to="`/content/${item.id}/${detailsid}`" v-for="(item, index) in chapter" :key="item.id">
+          {{ index + 1 }}
         </router-link>
       </ul>
       <router-link :to="`/content/${gainId}/${detailsid}`" v-if="gainId">
@@ -168,17 +136,13 @@
         </div>
         <!-- 章节 -->
         <ul class="chapter" v-if="chapter">
-          <router-link
-            tag="li"
-            :to="`/content/${cha.id}/${detailsid}`"
-            v-for="cha in chapter"
-            :key="cha.id"
-            @click.stop="moveIn(cha)"
-          >
-            <img :src="cha.cover +'@200w.jpg'" />
+          <router-link tag="li" :to="`/content/${cha.id}/${detailsid}`" v-for="cha in chapter" :key="cha.id"
+            @click.stop="moveIn(cha)">
+            <img :src="cha.cover + '@200w.jpg'" />
             <div class="name_text">
               <p :class="{ active_true: cha.change }">
-                {{ cha.ord }} &nbsp; {{ cha.title }}
+                <!-- {{ cha.ord }} &nbsp; {{ cha.title }} -->
+                {{ cha.title }}
               </p>
               <span>
                 {{ cha.pub_time.substr(5, 5) }} &nbsp;
@@ -186,85 +150,41 @@
                 <van-icon name="good-job" /> {{ cha.like_count }}
               </span>
             </div>
-            <van-icon
-              v-show="cha.change"
-              name="location"
-              class="xz"
-              color="skyblue"
-              size="15"
-            />
+            <van-icon v-show="cha.change" name="location" class="xz" color="skyblue" size="15" />
           </router-link>
         </ul>
 
         <!-- 顺序 -->
-        <div
-          :class="['order', { s: orders }, { j: !orders }]"
-          @click.stop="changOrder"
-        >
+        <div :class="['order', { s: orders }, { j: !orders }]" @click.stop="changOrder">
           {{ orders ? "升序" : "降序" }}
         </div>
       </div>
     </van-popup>
 
     <!-- 疑问提示 -->
-    <van-dialog
-      v-model="who"
-      showConfirmButton
-      class="hint"
-      confirmButtonText="知道了"
-      confirm-button-color="blue"
-    >
+    <van-dialog v-model="who" showConfirmButton class="hint" confirmButtonText="知道了" confirm-button-color="blue">
       <h3 style="textalign: center">说明</h3>
-      <p>1.应版权方要求，该漫画最新2话仅限漫币或 通用券解锁。</p>
-      <p>2.最新2话之前的话数支持漫读券或限免卡等 阅读道具解锁。</p>
-      <p>
-        3.每部漫画可支持的阅读道具不同，以作品
-        购买页面为准，感谢各位对作者大大的支持~
-      </p>
+      <p>1.应版权方要求，该漫画最新2话仅限漫币或通用券解锁。</p>
+      <p>2.最新2话之前的话数支持漫读券或限免卡等阅读道具解锁。</p>
+      <p>3.每部漫画可支持的阅读道具不同，以作品购买页面为准，感谢各位对作者大大的支持~</p>
     </van-dialog>
 
     <!-- 提示登录 -->
-    <van-dialog
-      v-model="showhint"
-      title="请先登录"
-      show-cancel-button
-      @confirm="confirm"
-      @cancel="cancel"
-    >
+    <van-dialog v-model="showhint" title="请先登录" show-cancel-button @confirm="confirm" @cancel="cancel">
       <!-- <img src="https://img01.yzcdn.cn/vant/apple-3.jpg" /> -->
     </van-dialog>
 
     <!-- 分享 -->
-    <van-share-sheet
-      v-model="showShare"
-      title="立即分享给好友"
-      :options="options"
-    />
+    <van-share-sheet v-model="showShare" title="立即分享给好友" :options="options" />
 
     <!-- 漫画点评 -->
-    <van-popup
-      v-model="showDian"
-      closeable
-      position="bottom"
-      :style="{ height: '100%' }"
-      title="漫画点评"
-      close-icon-position="top-left"
-    >
-      <ReviewsD
-        :detailsid="detailsid"
-        :value="value"
-        :score="score"
-        :name="name"
-      ></ReviewsD>
+    <van-popup v-model="showDian" closeable position="bottom" :style="{ height: '100%' }" title="漫画点评"
+      close-icon-position="top-left">
+      <ReviewsD :detailsid="detailsid" :value="value" :score="score" :name="name"></ReviewsD>
     </van-popup>
 
     <!-- 讨论区列表 -->
-    <van-popup
-      v-model="showComment"
-      closeable
-      position="bottom"
-      :style="{ height: '100%' }"
-    >
+    <van-popup v-model="showComment" closeable position="bottom" :style="{ height: '100%' }">
       <ShowComment :num="num" :detailsid="detailsid"></ShowComment>
     </van-popup>
     <!-- 底部 -->
@@ -277,14 +197,20 @@
 
 import CommentMain from "../../components/mangareview/CommentMain.vue";
 import ComicList from "../../components/Multiplex/ComicList.vue";
-//引入lodash库 使用其从数组中倒转
+// 引入lodash库 使用其从数组中倒转
 import _ from "lodash";
 import ReviewsD from "../../components/mangareview/ReviewsD.vue";
 import ShowComment from "../../components/mangareview/ShowComment.vue";
 import LoadingImg from "@/components/Lading/LoadingImg.vue";
 
 export default {
-  components: { CommentMain, ComicList, ReviewsD, ShowComment, LoadingImg },
+  components: {
+    CommentMain,
+    ComicList,
+    ReviewsD,
+    ShowComment,
+    LoadingImg
+  },
   props: {
     detailsid: {
       type: String,
@@ -293,23 +219,38 @@ export default {
   },
   data() {
     return {
-      mainList: [], //漫画内容
-      comList: [], //漫画评论
+      // 漫画内容
+      mainList: [],
+      // 漫画评论
+      comList: [],
+      // 是否已追漫标志，true-已追
       flag: false,
       dow: true,
-      value: 3, //星星个数
-      watch: 35, //阅读指数
-      score: 7, //评分
-      num: 0, //评论个数
-      page: 0, //换一换
-      show: false, //目录
-      showComment: false, //讨论区
-      chapter: [], //章节
-      orders: true, //顺序
+      // 星星个数
+      value: 3,
+      // 阅读数
+      watch: 35,
+      // 评分
+      score: 7,
+      // 评论个数
+      num: 0,
+      // 换一换
+      page: 0,
+      // 目录
+      show: false,
+      // 讨论区
+      showComment: false,
+      // 章节
+      chapter: [],
+      // 顺序
+      orders: true,
       who: false,
-      showhint: false, //提示登录
-      showShare: false, //分享
-      name: "", //漫画名字
+      // 提示登录
+      showhint: false,
+      // 分享
+      showShare: false,
+      // 漫画名字
+      name: "",
       options: [
         [
           { name: "微信", icon: "wechat" },
@@ -322,10 +263,11 @@ export default {
           { name: "分享海报", icon: "poster" },
           { name: "二维码", icon: "qrcode" },
           { name: "小程序码", icon: "weapp-qrcode" },
-        ],
+        ]
       ],
       showDian: false,
-      gainId: 0, //默认开始阅读第一章
+      // 默认开始阅读第一章
+      gainId: 0,
       jumpName: "home",
       text: "开始阅读",
     };
@@ -359,65 +301,61 @@ export default {
     // "$store.state.Login"(){
     // }
     flag() {
-      console.log(this.flag, "this.flag");
     },
     "$store.state.historyList"() {
       this.check();
-    },
+    }
   },
   methods: {
     async getDate() {
       await this.axios
         .get("ComicDetail?comicId=" + this.detailsid)
-        .then((re) => {
-          console.log("漫画详情===>", re);
-          this.$store.commit("addImgSrc", re.vertical_cover);
-          this.mainList = re;
-          //添加历史记录
-          // this.$store.commit("addHistory", re);
+        .then((data) => {
+          this.$store.commit("addImgSrc", data.vertical_cover);
+          this.mainList = data;
+          // 添加历史记录
+          // this.$store.commit("addHistory", data);
           this.name = this.mainList.title;
           this.chapter = _.reverse(
-            re.ep_list.map((v) => {
+            data.ep_list.map((v) => {
+              // todo: 章节没有做付费控制
               v.change = false;
-
               return v;
             })
           );
-
-          //默认第一章
+          // 默认第一章
           this.gainId = this.chapter[0].id;
           this.check();
         });
       await this.axios
         .get("GetReviewDetailByComicID?comicId=" + this.detailsid)
-        .then((re) => {
-          this.comList = re;
-          this.score = re.score.toFixed(1);
+        .then((data) => {
+          this.comList = data;
+          this.score = data.score.toFixed(1);
           this.value = this.score / 2;
-          this.watch = (re.watch / 10000).toFixed(1) + "万";
+          this.watch = (data.watch / 10000).toFixed(1) + "万";
           //   Number.toFixed(1)  四舍五入后，保留小数点后一位
           //   console.log("漫画评论===>", this.comList);
         });
-      await this.axios.get("ReplyMain?oid=" + this.detailsid).then((re) => {
-        console.log("11111", re);
-        let num = re;
+      await this.axios.get("ReplyMain?oid=" + this.detailsid)
+      .then((data) => {
+        let num = data;
         if (num.cursor.all_count != undefined) {
-          this.num = re.cursor.all_count;
+          this.num = data.cursor.all_count;
         }
       });
     },
-    //判断是否看过这本书
+    // 判断是否看过这本书
     check() {
       let arr = this.$store.state.historyList;
       arr.forEach((i) => {
         if (i.id == this.detailsid) {
-          console.log(i.chapterID, i.title);
           this.gainId = i.chapterID;
           this.text = "继续观看";
         }
       });
     },
-    /* 返回 */
+    // 返回
     onClickLeft() {
       // let name = window.localStorage.getItem("beforeName");
       // if (name == "null") {
@@ -426,23 +364,20 @@ export default {
       //   return;
       // }
       // this.$router.push({ name: name });
-      this.$router.back() 
+      this.$router.back()
     },
-
-    /* 追漫 */
+    // 追漫
     chase(obj) {
-      //判读是否已经登录
+      // 判读是否已经登录
       if (!this.$store.state.Login) {
         this.showhint = true;
         return;
       }
-
-      //当高亮时点击删除漫画
+      // 当高亮时点击删除漫画
       if (this.flag) {
         this.removeList();
       } else {
         //当未高亮时点击添加漫画
-
         this.addList(obj);
       }
       this.flag = !this.flag;
@@ -453,27 +388,19 @@ export default {
     removeList() {
       this.$store.commit("removeBook", this.detailsid);
     },
-    /* 修改追漫高亮 */
+    // 修改追漫高亮
     changeColor() {
       this.$store.state.bookList.forEach((item) => {
         if (item.id == this.detailsid) {
           this.flag = true;
-          console.log(item.id, this.detailsid, this.flag);
         }
       });
-      console.log(
-        this.$store.state.bookList,
-        "--------bookList--------",
-        this.flag
-      );
     },
-
     onClose() {
       this.show = false;
     },
     showPopup() {
       this.show = true;
-      console.log("???");
     },
     changOrder() {
       this.orders = !this.orders;
@@ -482,32 +409,25 @@ export default {
       } else {
         this.chapter = _.reverse(this.chapter);
       }
-      console.log("顺序==》", this.chapter);
     },
-
-    /* 点击目录按钮 */
+    // 点击目录按钮
     moveIn(value) {
       value.change = true;
-      console.log("点击了没", value);
       // this.gainId = value.id;
-      console.log(this.chapter);
     },
-    /* 提示登录 */
+    // 提示登录
     cancel() {
-      console.log("取消！！");
     },
     confirm() {
-      console.log("确定~");
       this.$store.commit("changeFlag", true);
-    },
+    }
   },
-
   destroyed() {
     this.$toast.loading({
       message: "加载中...",
       forbidClick: true,
     });
-  },
+  }
 };
 </script>
 
@@ -515,7 +435,7 @@ export default {
 .details {
   background-color: #fff;
 
-  /* 提示 */
+  // 疑问提示
   .hint {
     p {
       font-size: 12px;

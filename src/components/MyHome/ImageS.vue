@@ -9,11 +9,12 @@
 <script>
 export default {
   props: {
+    // 默认不是皮肤的，也就是消息的
     skin: {
       type: Boolean,
-      default: false,
+      default: false
     },
-  },
+  }
 };
 </script>
 
@@ -23,9 +24,11 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   img {
     width: 80%;
   }
+
   p {
     font-size: 15px;
   }

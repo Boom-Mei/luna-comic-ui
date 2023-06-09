@@ -1,6 +1,7 @@
 <template>
   <div class="my">
     <!-- <h1>我的</h1> -->
+
     <div class="top">
       <span class="iconfont icon-shezhi" @click.stop="seting"></span>
       <span class="iconfont icon-youxiang" @click.stop="showNew = true"></span>
@@ -9,7 +10,7 @@
 
     <div class="avatar" @click.stop="changeLog">
       <div class="a_top">
-        
+
         <img v-if="this.$store.state.Login" src="@/assets/image/登录头像2.jpg" />
         <img v-else src="@/assets/image/头像.webp" />
         <div class="text" v-if="!this.$store.state.Login">账号登录</div>
@@ -33,21 +34,12 @@
         <div>
           <p>漫币</p>
           <span>
-            <a
-              v-if="this.$store.state.Login"
-              href="https://big.bilibili.com/mobile/index"
-            >
-              <van-tag color="#FE9D10" style="borderradius: 20px" size="medium"
-                >首充奖励
+            <a v-if="this.$store.state.Login" href="https://big.bilibili.com/mobile/index">
+              <van-tag color="#FE9D10" style="borderradius: 20px" size="medium">首充奖励
                 <van-icon name="arrow" />
               </van-tag>
             </a>
-            <van-tag
-              v-else
-              color="#FE9D10"
-              style="borderradius: 20px"
-              size="medium"
-              >首充奖励
+            <van-tag v-else color="#FE9D10" style="borderradius: 20px" size="medium">首充奖励
               <van-icon name="arrow" />
             </van-tag>
           </span>
@@ -63,9 +55,7 @@
         <img src="@/assets/image/礼物.gif" alt="">
         <div class="t">
           <p>
-            福利中心<van-tag color="#FFE2E6" text-color="#F95C85"
-              >去签到</van-tag
-            >
+            福利中心<van-tag color="#FFE2E6" text-color="#F95C85">去签到</van-tag>
           </p>
           <span v-if="!this.$store.state.Login">解锁进度：--/--</span>
           <span v-else>解锁进度：00/28</span>
@@ -100,13 +90,7 @@
       </li>
     </ul>
     <!-- 提示登录 -->
-    <van-dialog
-      v-model="show"
-      title="请先登录"
-      show-cancel-button
-      @confirm="confirm"
-      @cancel="cancel"
-    >
+    <van-dialog v-model="show" title="请先登录" show-cancel-button @confirm="confirm" @cancel="cancel">
       <!-- <img src="https://img01.yzcdn.cn/vant/apple-3.jpg" /> -->
     </van-dialog>
 
@@ -114,22 +98,12 @@
     <SetUp ref="sss"></SetUp>
 
     <!-- 消息 -->
-    <van-popup
-      v-model="showNew"
-      closeable
-      position="bottom"
-      :style="{ height: '100%' }"
-    >
+    <van-popup v-model="showNew" closeable position="bottom" :style="{ height: '100%' }">
       <NewS></NewS>
     </van-popup>
 
     <!-- 皮肤 -->
-    <van-popup
-      v-model="showPP"
-      closeable
-      position="bottom"
-      :style="{ height: '100%' }"
-    >
+    <van-popup v-model="showPP" closeable position="bottom" :style="{ height: '100%' }">
       <SkinS></SkinS>
     </van-popup>
 
@@ -141,14 +115,20 @@
 import SetUp from "@/components/MyHome/SetUp.vue";
 import NewS from "@/components/MyHome/NewS.vue";
 import SkinS from "../../components/MyHome/SkinS.vue";
+
 export default {
+  components: {
+    SetUp,
+    NewS,
+    SkinS
+  },
   data() {
     return {
       activityArr: [],
       arr: [],
       show: false,
       showNew: false,
-      showPP: false,
+      showPP: false
     };
   },
   created() {
@@ -157,16 +137,15 @@ export default {
   },
   methods: {
     async getUser() {
-      await this.axios.get("UCenterConf").then((re) => {
-        // console.log(re);
-        this.activityArr = re.confs.slice(0, 4);
-        this.arr = re.confs.slice(4, re.confs.length);
+      await this.axios.get("UCenterConf").then((data) => {
+        // console.log(data);
+        this.activityArr = data.confs.slice(0, 4);
+        this.arr = data.confs.slice(4, data.confs.length);
         this.arr = this.arr.map((v) => {
           if (v.title == "帮助中心") {
             v.jump_url =
               "https://www.bilibili.com/blackboard/topic/activity-help.html";
-          }
-          if (v.title == "青少年模式") {
+          } else if (v.title == "青少年模式") {
             (v.text1 =
               "在青少年模式中，我们精选了一批教育类、知识类内容呈现在首页，且部分功能无法使用，每日晚22时至次日早6时期间无法使用哔哩哔哩漫画。\n开启青少年模式后，将自动开启时间锁，时间锁为40分钟。单日使用时长超过触发时间，需输入密码才能继续使用\n开启青少年模式，需先设置独立密码，如忘记密码可通过申诉重置密码\n青少年模式是哔哩哔哩漫画为促进青少年健康成长做出的一次尝试，我们优先针对核心场景进行了优化，也将继续致力于优化更多场景。"),
               (v.text2 =
@@ -178,7 +157,6 @@ export default {
         });
       });
     },
-
     getIn() {
       console.log(this.$store.state.Login);
       // this.log = this.$store.state.Login;
@@ -189,10 +167,8 @@ export default {
       }
     },
     cancel() {
-      console.log("取消！！");
     },
     confirm() {
-      console.log("确定~");
       this.$store.commit("changeFlag", true);
     },
     seting() {
@@ -200,8 +176,7 @@ export default {
       //设置子组件的数据
       this.$refs.sss.show = true;
     },
-  },
-  components: { SetUp, NewS, SkinS },
+  }
 };
 </script>
 
@@ -363,7 +338,8 @@ export default {
         height: 45px;
         margin: 0 3px 0 15px;
       }
-      .jifen{
+
+      .jifen {
         width: 30px;
         height: 30px;
       }

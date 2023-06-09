@@ -4,7 +4,7 @@
   <div class="content">
     <!-- 漫画内容 -->
     <ul v-if="mainList" class="over" @click.stop="showPopup" ref="ul">
-      <p>往后看吧，前面没有了标签(～￣▽￣)～</p>
+      <!-- <p>往后看吧，前面没有了标签(～￣▽￣)～</p> -->
 
       <li v-for="(img, index) in mainList" :key="index">
         <img :src="img" v-lazy="img" v-if="mainList.length > 1" />
@@ -13,52 +13,28 @@
     </ul>
 
     <!-- bottom 菜单 -->
-    <van-popup
-      v-model="show"
-      position="bottom"
-      :style="{ height: '15%' }"
-      :overlay="false"
-      class="btnBottom"
-    >
+    <van-popup v-model="show" position="bottom" :style="{ height: '15%' }" :overlay="false" class="btnBottom">
       <div class="c_top">
         <!-- 上一话 -->
-        <span
-          :style="[
-            {
-              color:
-                page == 0 || page == 1 ? (color = 'gray') : (color = '#fff'),
-            },
-          ]"
-          @click.stop="beforeChapter"
-          >上一话</span
-        >
+        <span :style="[
+          {
+            color:
+              page == 0 || page == 1 ? (color = 'gray') : (color = '#fff'),
+          },
+        ]" @click.stop="beforeChapter">上一话</span>
         <!-- 拖动条/进度条 -->
-        <van-slider
-          @change="onChange"
-          @input="onInput"
-          v-model="value"
-          :min="0"
-          :max="100"
-          step="1"
-          button-size="18px"
-          bar-height="4px"
-          active-color="skyblue"
-          inactive-color="gray"
-        />
+        <van-slider @change="onChange" @input="onInput" v-model="value" :min="0" :max="100" step="1" button-size="18px"
+          bar-height="4px" active-color="skyblue" inactive-color="gray" />
 
         <!-- 下一话 -->
-        <span
-          :style="[
-            {
-              color:
-                page == this.chapter.length - 1
-                  ? (color = 'gray')
-                  : (color = '#fff'),
-            },
-          ]"
-          @click.stop="nextChapter"
-          >下一话</span
-        >
+        <span :style="[
+          {
+            color:
+              page == this.chapter.length - 1
+                ? (color = 'gray')
+                : (color = '#fff'),
+          },
+        ]" @click.stop="nextChapter">下一话</span>
       </div>
 
       <div class="c_bottom">
@@ -91,13 +67,7 @@
     </van-popup>
 
     <!-- top 菜单 -->
-    <van-popup
-      v-model="show"
-      position="top"
-      :style="{ height: '7%' }"
-      :overlay="false"
-      class="btnTop"
-    >
+    <van-popup v-model="show" position="top" :style="{ height: '7%' }" :overlay="false" class="btnTop">
       <!-- 返回 -->
       <van-icon name="arrow-left" color="#fff" @click.stop="onClickLeft" />
 
@@ -112,12 +82,7 @@
     </van-popup>
 
     <!-- 章节列表 -->
-    <van-popup
-      v-model="showChapter"
-      position="bottom"
-      :style="{ height: '60%' }"
-      color="#1F243A"
-    >
+    <van-popup v-model="showChapter" position="bottom" :style="{ height: '60%' }" color="#1F243A">
       <div class="box" v-if="todoList">
         <div class="title_top">
           <h3>全部章节({{ todoList.total }})</h3>
@@ -132,23 +97,14 @@
         </div>
         <!-- 章节 -->
         <ul class="chapter" v-if="chapter">
-          <li
-            @click.stop="changeNum(cha.id)"
-            v-for="cha in chapter"
-            :key="cha.id"
-            :class="['zhangjie', { active_red: cha.id == contentid }]"
-            :ref="cha.id == contentid ? 'activeRef' : ''"
-            :tabindex="{ '0': cha.id == contentid }"
-          >
+          <li @click.stop="changeNum(cha.id)" v-for="cha in chapter" :key="cha.id"
+            :class="['zhangjie', { active_red: cha.id == contentid }]" :ref="cha.id == contentid ? 'activeRef' : ''"
+            :tabindex="{ '0': cha.id == contentid }">
             <img :src="cha.cover" />
             <div class="name_text">
               <p :class="{ active_true: cha.id == contentid }">
-                {{ cha.ord }} &nbsp; {{ cha.title }}&nbsp;&nbsp;&nbsp;
-                <van-icon
-                  v-show="cha.id == contentid"
-                  name="location"
-                  color="#3AA0EA"
-                />
+                {{ cha.title }}
+                <van-icon v-show="cha.id == contentid" name="location" color="#3AA0EA" />
               </p>
               <span>
                 {{ cha.pub_time.substr(5, 5) }} &nbsp;
@@ -158,13 +114,7 @@
                 {{ cha.like_count }}
               </span>
             </div>
-            <van-icon
-              v-show="cha.change"
-              name="location"
-              class="xz"
-              color="skyblue"
-              size="15"
-            />
+            <van-icon v-show="cha.change" name="location" class="xz" color="skyblue" size="15" />
           </li>
           <!-- <router-link
             tag="li"
@@ -202,22 +152,14 @@
         </ul>
 
         <!-- 顺序 -->
-        <div
-          :class="['order', { s: orders }, { j: !orders }]"
-          @click.stop="changOrder"
-        >
+        <div :class="['order', { s: orders }, { j: !orders }]" @click.stop="changOrder">
           {{ orders ? "升序" : "降序" }}
         </div>
       </div>
     </van-popup>
 
     <!-- 设置列表 -->
-    <van-popup
-      v-model="showSetup"
-      position="bottom"
-      :style="{ height: '40%' }"
-      class="set-up"
-    >
+    <van-popup v-model="showSetup" position="bottom" :style="{ height: '40%' }" class="set-up">
       <div class="item">
         <p>画质</p>
         <div class="change d1">
@@ -232,6 +174,7 @@
           </div>
         </div>
       </div>
+      <!-- todo: 横竖屏未实现 -->
       <div class="item">
         <p>横竖屏</p>
         <div class="change d2">
@@ -249,30 +192,21 @@
       </div>
     </van-popup>
 
+    <!-- 提示登录 -->
+    <van-dialog v-model="showhint" title="请先登录" show-cancel-button @confirm="confirm" @cancel="cancel">
+      <!-- <img src="https://img01.yzcdn.cn/vant/apple-3.jpg" /> -->
+    </van-dialog>
+
     <!-- 疑问提示 -->
-    <van-dialog
-      v-model="who"
-      showConfirmButton
-      class="hint"
-      confirmButtonText="知道了"
-      confirm-button-color="blue"
-    >
+    <van-dialog v-model="who" showConfirmButton class="hint" confirmButtonText="知道了" confirm-button-color="blue">
       <h3>说明</h3>
-      <p>1.应版权方要求，该漫画最新2话仅限漫币或 通用券解锁。</p>
-      <p>2.最新2话之前的话数支持漫读券或限免卡等 阅读道具解锁。</p>
-      <p>
-        3.每部漫画可支持的阅读道具不同，以作品
-        购买页面为准，感谢各位对作者大大的支持~
-      </p>
+      <p>1.应版权方要求，该漫画最新2话仅限漫币或通用券解锁。</p>
+      <p>2.最新2话之前的话数支持漫读券或限免卡等阅读道具解锁。</p>
+      <p>3.每部漫画可支持的阅读道具不同，以作品购买页面为准，感谢各位对作者大大的支持~</p>
     </van-dialog>
 
     <!-- 分享列表 -->
-    <van-share-sheet
-      v-model="showShare"
-      title="立即分享给好友"
-      :options="options"
-      @select="onSelect"
-    />
+    <van-share-sheet v-model="showShare" title="立即分享给好友" :options="options" @select="onSelect" />
   </div>
 </template>
 
@@ -281,29 +215,40 @@ import _ from "lodash";
 import LoadingImg from "@/components/Lading/LoadingImg.vue";
 
 export default {
-  components: { LoadingImg },
+  components: {
+    LoadingImg
+  },
   props: {
     contentid: {
-      //章节id
+      // 章节id
       type: String,
-      default: "",
+      default: ""
     },
     detailsid: {
-      //漫画id
+      // 漫画id
       type: String,
-      default: "31351",
-    },
+      default: "31351"
+    }
   },
   data() {
     return {
-      mainList: [], //存放图片
-      comicsList: [], //存放漫画
-      todoList: [], //
-      chapter: [], //章节
-      showChapter: false, //显示章节
-      show: false, //显示 top 菜单
-      showShare: false, //显示分享列表
-      showSetup: false, //显示设置
+      // 存放图片
+      mainList: [],
+      // 存放漫画
+      comicsList: [],
+      todoList: [],
+      // 章节
+      chapter: [],
+      // 显示章节
+      showChapter: false,
+      // 显示 top 菜单
+      show: false,
+      // 显示分享列表
+      showShare: false,
+      // 显示设置
+      showSetup: false,
+      // 显示登录
+      showhint: false,
       options: [
         [
           { name: "微信", icon: "wechat" },
@@ -319,22 +264,27 @@ export default {
         ],
       ],
       value: 0,
-      who: false, //疑问
-      flag: false, //显示追漫
-      titleName: "", //漫画名字
-      page: 0, //第几话
-      cm: 0, //滚动距离
-      orders: true, //顺序
+      // 疑问
+      who: false,
+      // 显示追漫
+      flag: false,
+      // 漫画名字
+      titleName: "",
+      // 第几话
+      page: 0,
+      // 滚动距离
+      cm: 0,
+      // 顺序
+      orders: true,
       che1: false,
       che2: true,
       hua: "流畅",
-      goIn: window.localStorage.getItem("afterName"),
+      goIn: window.localStorage.getItem("afterName")
     };
   },
   beforeRouteEnter(to, from, next) {
     console.log(from, "next");
     let name = from.name;
-
     // if (name == "details") {
     //   console.log("-------详情------------");
     //   next();
@@ -348,8 +298,6 @@ export default {
     this.changeColor();
     // this.$nextTick(() => {
     //   console.log(this.$refs.activeRef,'activeRef');
-      
-
     // });
   },
   mounted() {
@@ -363,24 +311,22 @@ export default {
   },
   watch: {
     $route() {
-      console.log("反应？");
       this.$router.go(0);
-    },
+    }
   },
   methods: {
     async getDate() {
       await this.axios
         .get("GetImageIndex?epId=" + this.contentid)
-        .then((re) => {
-          // console.log(re,'re');
-          let arr = re.images.map((v) => {
+        .then((data) => {
+          let arr = data.images.map((v) => {
             let host = "https://manga.hdslb.com";
             v.path =
               this.hua == "超清"
                 ? "%22" + host + v.path + "@1000w.webp%22"
                 : this.hua == "高清"
-                ? (v.path = "%22" + host + v.path + "@1000w.jpg%22")
-                : (v.path = "%22" + host + v.path + "@660w.webp%22");
+                  ? (v.path = "%22" + host + v.path + "@1000w.jpg%22")
+                  : (v.path = "%22" + host + v.path + "@660w.webp%22");
             // v.path = "%22" + host + v.path + "@1000w.webp%22";
             // v.path = "%22" + host + v.path + "@1000w.jpg%22";
             // v.path = "%22" + host + v.path + "@660w.webp%22";
@@ -392,9 +338,9 @@ export default {
           // console.log(this.mainList);
           this.axios
             .get("ImageToken?urls=[" + this.mainList + "]")
-            .then((item) => {
+            .then((data) => {
               // console.log("漫画内容===>", item);
-              this.mainList = item.map((v) => {
+              this.mainList = data.map((v) => {
                 v.main = v.url + "?token=" + v.token;
                 return v.main;
               });
@@ -404,15 +350,13 @@ export default {
               console.log("请求失败===>", error);
             });
         });
-      this.axios.get("ComicDetail?comicId=" + this.detailsid).then((re) => {
-        console.log("漫画详情<===>", re);
-        let obj = re;
-
-        this.todoList = re;
+      this.axios.get("ComicDetail?comicId=" + this.detailsid)
+      .then((data) => {
+        let obj = data;
+        this.todoList = data;
         this.chapter = _.reverse(
-          re.ep_list.map((v) => {
+          data.ep_list.map((v) => {
             v.change = false;
-
             return v;
           })
         );
@@ -421,16 +365,14 @@ export default {
           if (this.contentid == v.id) {
             this.titleName = v.title;
             this.page = v.ord;
-            //添加章节id
+            // 添加章节id
             obj.chapterID = this.contentid;
-            //添加第几话
+            // 添加第几话
             obj.chapterNum = v.short_title;
-            //添加历史记录
-            this.$store.commit("addHistory", re);
+            // 添加历史记录
+            this.$store.commit("addHistory", data);
           }
         });
-
-        console.log("this", this.chapter);
       });
     },
     onClose() {
@@ -439,9 +381,8 @@ export default {
     showPopup() {
       // this.show = true;
       this.show = !this.show;
-      console.log("???");
     },
-    /* 返回 */
+    // 返回
     onClickLeft() {
       // window.history.go(-1);
       // window.history.back(-1);
@@ -454,13 +395,12 @@ export default {
       // this.$router.push({ name: "details" });
       this.$router.back();
     },
-    //显示章节按钮
+    // 显示章节按钮
     changeChapter() {
-      console.log(this.$refs.activeRef,'activeRef');
-
       this.showChapter = !this.showChapter;
     },
-    //选择章节
+    // 选择章节
+    // todo: 选择章节直接空白页了
     changeNum(id) {
       this.$router.replace({
         name: "content",
@@ -470,7 +410,7 @@ export default {
         },
       });
     },
-    //详情
+    // 详情
     goTo() {
       // let name = localStorage.getItem("afterName");
       // if (name == "home") {
@@ -481,10 +421,10 @@ export default {
         name: "details",
         params: {
           detailsid: this.detailsid,
-        },
+        }
       });
     },
-    /* 滚动事件 */
+    // 滚动事件
     scrollShow() {
       // this.show = false;
       // console.log("滚动事件", this.$refs.ul.scrollHeight,this.$refs.ul.offsetHeight);
@@ -506,7 +446,7 @@ export default {
       // console.log("可视化窗口高度+卷去高度==>", heightMove + scrollY);
       // console.log("到底部==>", this.$refs.ul.offsetHeight + 50);
     },
-    /* 分享 */
+    // 分享
     onSelect(option) {
       this.$toast(option.name);
       this.showShare = false;
@@ -525,27 +465,23 @@ export default {
 
       document.documentElement.scrollTop = top;
     },
-
-    /* 追漫 */
+    // 追漫
     chase() {
-      //判读是否已经登录
+      // 判读是否已经登录
       if (!this.$store.state.Login) {
         this.showhint = true;
         return;
       }
-
-      //当高亮时点击删除漫画
+      // 当高亮时点击删除漫画
       if (this.flag) {
         this.$store.commit("removeBook", this.detailsid);
       } else {
-        //当未高亮时点击添加漫画
-
+        // 当未高亮时点击添加漫画
         this.$store.commit("addBook", this.todoList);
       }
       this.flag = !this.flag;
     },
-
-    /* 修改追漫高亮 */
+    // 修改追漫高亮
     changeColor() {
       this.$store.state.bookList.forEach((item) => {
         if (item.id == this.detailsid) {
@@ -553,7 +489,13 @@ export default {
         }
       });
     },
-    /* 顺序 */
+    // 提示登录
+    cancel() {
+    },
+    confirm() {
+      this.$store.commit("changeFlag", true);
+    },
+    // 顺序
     changOrder() {
       this.orders = !this.orders;
       if (!this.orders) {
@@ -561,71 +503,66 @@ export default {
       } else {
         this.chapter = _.reverse(this.chapter);
       }
-      console.log("顺序==》", this.chapter);
     },
-    /* 上一话 */
+    // 上一话
     beforeChapter() {
       this.chapter.forEach((item, index) => {
-        /* 获取数组被选中的index下标 */
+        // 获取数组被选中的index下标
         if (this.contentid == item.id) {
           if (index == 0) {
             return;
           }
-          console.log(this.chapter[index - 1]);
-          /* 上一章漫画的id */
+          // 上一章漫画的id
           let num = this.chapter[index - 1].id;
-          console.log(num, this.detailsid, this.chapter.length);
-          /* 跳转到上一章节 */
+          // 跳转到上一章节
           this.$router.replace({
             name: "content",
             params: {
               contentid: num,
               detailsid: this.detailsid,
-            },
+            }
           });
         }
       });
     },
-    /* 下一话 */
+    // 下一话
     nextChapter() {
       this.chapter.forEach((item, index) => {
-        /* 获取数组被选中的index下标 */
+        // 获取数组被选中的index下标
         if (this.contentid == item.id) {
           if (index == this.chapter.length - 1) {
             return;
           }
-          // console.log(index, "index", this.chapter.length, "length");
-          // console.log(this.chapter[index + 1]);
-          /* 下一章漫画的id */
+          // 下一章漫画的id
           let num = String(this.chapter[index + 1].id);
           // console.log(num, "num", this.chapter.length, "length");
-          /* 跳转到下一章节 */
+          // 跳转到下一章节
           this.$router.replace({
             name: "content",
             params: {
               contentid: num,
               detailsid: this.detailsid,
-            },
+            }
           });
         }
       });
     },
-    /* 超清 */
+    // 超清
     changeChao() {
       this.hua = "超清";
       this.getDate();
     },
-    /* 高清 */
+    // 高清
     changeGao() {
       this.hua = "高清";
       this.getDate();
     },
-    /* 流畅 */
+    // 流畅
     changeLiu() {
       this.hua = "流畅";
       this.getDate();
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -637,6 +574,7 @@ export default {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
+
     .item {
       flex: 1;
       display: flex;
@@ -644,9 +582,11 @@ export default {
       justify-content: space-between;
       padding: 10px;
       font-size: 14px;
+
       .change {
         display: flex;
         justify-content: space-between;
+
         div {
           width: 60px;
           height: 34px;
@@ -666,6 +606,7 @@ export default {
       .d1 {
         width: 208px;
       }
+
       .d2 {
         width: 135px;
       }
@@ -676,6 +617,7 @@ export default {
     h3 {
       text-align: center;
     }
+
     p {
       font-size: 12px;
       padding: 1px 10px;
@@ -697,6 +639,7 @@ export default {
 
     li {
       width: 100%;
+
       img {
         width: 100%;
         height: 100%;
@@ -821,7 +764,7 @@ export default {
       }
     }
 
-    /* M */
+    // M
     .money {
       width: 100%;
       height: 20px;
@@ -891,6 +834,7 @@ export default {
           padding: 5px;
           overflow: hidden;
           text-overflow: ellipsis;
+
           p {
             width: 100%;
             font-size: 14px;
@@ -919,9 +863,11 @@ export default {
       }
     }
   }
+
   .zhangjie {
     background-color: #1f253b;
   }
+
   .active_red {
     // border: 1px solid red;
     // transform: translateY(50%);

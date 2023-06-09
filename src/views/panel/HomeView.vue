@@ -1,35 +1,28 @@
 <template>
-  <div
-    class="home"
-    ref="home"
-    :style="{
+  <div class="home" ref="home" :style="{
+    backgroundColor:
+      active == '推荐'
+        ? $store.state.recommendColor
+        : active == '热门'
+          ? 'rgba(0,0,0,0)'
+          : '#fff',
+
+    '--backgroundImage':
+      active == '热门' ? `url(${$store.state.hotColor})` : null,
+  }">
+    <div class="header" :style="{
       backgroundColor:
         active == '推荐'
           ? $store.state.recommendColor
           : active == '热门'
-          ? 'rgba(0,0,0,0)'
-          : '#fff',
-
-      '--backgroundImage':
-        active == '热门' ? `url(${$store.state.hotColor})` : null,
-    }"
-  >
-    <div
-      class="header"
-      :style="{
-        backgroundColor:
-          active == '推荐'
-            ? $store.state.recommendColor
-            : active == '热门'
             ? 'rgba(0,0,0,0)'
             : null,
 
-        '--backgroundImage':
-          active == '热门' ? `url(${$store.state.hotColor})` : null,
-        paddingTop: '10px',
-        paddingBottom: '5px',
-      }"
-    >
+      '--backgroundImage':
+        active == '热门' ? `url(${$store.state.hotColor})` : null,
+      paddingTop: '10px',
+      paddingBottom: '5px',
+    }">
       <div class="top_h">
         <img class="logo" src="@/assets/image/logo.png" />
         <!-- 搜索按钮 -->
@@ -39,25 +32,14 @@
 
     <!-- 头部导航 -->
     <div class="tablist">
-      <van-tabs
-        @scroll="scrollTop"
-        v-model="active"
-        sticky
-        animated
-        :background="
-          active == '推荐'
-            ? $store.state.recommendColor
-            : active == '热门' && scrolltop < 100
+      <van-tabs @scroll="scrollTop" v-model="active" sticky animated :background="
+        active == '推荐'
+          ? $store.state.recommendColor
+          : active == '热门' && scrolltop < 100
             ? 'rgba(0,0,0,0)'
             : '#F8F9F9'
-        "
-        :color="'rgba(0,0,0,0)'"
-        title-active-color="skyblue"
-        title-inactive-color="#303133"
-        :border="false"
-        @click="onClick"
-        ref="tab"
-      >
+      " :color="'rgba(0,0,0,0)'" title-active-color="skyblue" title-inactive-color="#303133" :border="false"
+        @click="onClick" ref="tab">
         <van-tab title="热门" name="热门" class="reMen">
           <hot-nav :slides="slides" :sex="sex"></hot-nav>
         </van-tab>
@@ -98,14 +80,18 @@ export default {
   data() {
     return {
       active: "",
-      slides: null, //热门轮播图地址
-      bannerList: null, //推荐轮播图
-      boy: 263, //男生
-      girl: 262, //女生
+      // 热门轮播图地址
+      slides: null,
+      // 推荐轮播图
+      bannerList: null,
+      // 男生
+      boy: 263,
+      // 女生
+      girl: 262,
       sex: "",
       todoList: [],
       page: 2,
-      scrolltop: 0,
+      scrolltop: 0
     };
   },
   mounted() {
@@ -127,10 +113,10 @@ export default {
     },
   },
   methods: {
-    async getDate(offset = 20) {
-      await this.axios.get("GetClassPageHomeBanner?id=1145").then((re) => {
-        // this.slides = re.banner;
-        this.slides = re.banner.map((v) => {
+    async getDate(offset = 10) {
+      await this.axios.get("GetClassPageHomeBanner?id=1145").then((data) => {
+        // this.slides = data.banner;
+        this.slides = data.banner.map((v) => {
           if (v.jump_url.indexOf("detail" != -1)) {
             v.numID = v.jump_url.match(/\d+/g)[0];
           }
@@ -138,9 +124,8 @@ export default {
         });
         console.log("热门banner===>", this.slides);
       });
-      this.axios.get("HomeFeed?pageNum=1&pageSize=200").then((re) => {
-        console.log("推荐===>", re);
-        this.todoList = re.feeds;
+      this.axios.get("HomeFeed?pageNum=1&pageSize=10").then((data) => {
+        this.todoList = data.feeds;
         this.todoList = this.todoList.slice(0, offset);
       });
     },
@@ -152,8 +137,7 @@ export default {
     },
     addMore() {
       this.page++;
-      let offset = 20 * (this.page - 1);
-      console.log(offset);
+      let offset = 10 * (this.page - 1);
       this.getDate(offset);
       this.$toast.loading({
         message: "加载中...",
@@ -161,7 +145,7 @@ export default {
       });
     },
     scrollTop(e) {
-      // console.log(e.scrollTop, this.active, this.$refs.home);
+      console.log(e);
       let top = e.scrollTop;
       this.scrolltop = top;
       if (top > 100) {
@@ -176,9 +160,10 @@ export default {
         }
       }
     },
-  },
+  }
 };
 </script>
+
 <style lang="scss" scoped>
 .home {
   // background-color: white;
@@ -204,6 +189,7 @@ export default {
   .header {
     width: 100%;
     height: 100%;
+
     &::after {
       content: "";
       position: absolute;
@@ -217,6 +203,7 @@ export default {
       z-index: -1;
       filter: blur(30px);
     }
+
     .top_h {
       width: 100%;
       display: flex;

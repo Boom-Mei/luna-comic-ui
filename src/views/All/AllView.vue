@@ -1,23 +1,13 @@
 <template>
   <div class="all">
     <!-- <h3>查看全部</h3> -->
+
     <van-sticky>
-      <van-nav-bar
-        :title="allname"
-        left-text="返回"
-        left-arrow
-        @click-left="onClickLeft"
-        class="title_top"
-        :border="false"
-      />
+      <van-nav-bar :title="allname" left-text="返回" left-arrow @click-left="onClickLeft" class="title_top"
+        :border="false" />
     </van-sticky>
     <ul v-if="alList" class="all_main">
-      <router-link
-        tag="li"
-        :to="`/details/${item.item_id}`"
-        v-for="item in alList"
-        :key="item.item_id"
-      >
+      <router-link tag="li" :to="`/details/${item.item_id}`" v-for="item in alList" :key="item.item_id">
         <!-- 左边头像 -->
         <div class="avatar">
           <img :src="item.image" v-lazy="item.image" />
@@ -36,25 +26,12 @@
     </ul>
 
     <!-- 加载中... -->
-    <van-loading
-      class="load"
-      type="spinner"
-      size="24px"
-      text-size="18px"
-      color="skyblue"
-      style="textalign: center"
-      v-else
-      >加载中...
+    <van-loading class="load" type="spinner" size="24px" text-size="18px" color="skyblue" style="textalign: center"
+      v-else>加载中...
     </van-loading>
     <div class="bottom_tab">
-      <van-pagination
-        v-if="alList.length"
-        v-model="currentPage"
-        :total-items="24"
-        :items-per-page="5"
-        @change="changeDate"
-        @black="'#000'"
-      />
+      <van-pagination v-if="alList.length" v-model="currentPage" :total-items="24" :items-per-page="5"
+        @change="changeDate" @black="'#000'" />
     </div>
   </div>
 </template>
@@ -64,17 +41,17 @@ export default {
   props: {
     allid: {
       type: String,
-      default: "0",
+      default: "0"
     },
     allname: {
       type: String,
-      default: "全部",
-    },
+      default: "全部"
+    }
   },
   data() {
     return {
       alList: [],
-      currentPage: 1,
+      currentPage: 1
     };
   },
   created() {
@@ -92,27 +69,25 @@ export default {
   // this.getDate()
   // },
   methods: {
-    /* 获取数据 */
+    // 获取数据
     getDate() {
       this.axios
         .get(
           `GetHomeSecondaryComics?moduleId=${this.allid}&pageNum=${this.currentPage}&pageSize=10`
         )
-        .then((re) => {
-          this.alList = re.comics;
-          console.log(this.alList);
+        .then((data) => {
+          this.alList = data.comics;
         });
     },
-    /* 返回 */
+    // 返回
     onClickLeft() {
       // window.history.go(-1);
       window.history.back();
     },
-
-    /* 分页 */
+    // 分页
     changeDate() {
       this.getDate(this.currentPage);
-    },
+    }
   },
 };
 </script>

@@ -51,6 +51,7 @@ export default {};
   border-top: 1px solid #ccc;
   background-color: #fff;
   min-height: 55px;
+
   .box {
     flex: 1;
     text-align: center;
@@ -59,13 +60,14 @@ export default {};
     display: flex;
     flex-direction: column;
     align-items: center;
+
     .image {
       width: 25px;
       height: 25px;
     }
+
     .home {
-      background: url(@/assets/image/nav/home_f.png) no-repeat center / 25px
-        25px;
+      background: url(@/assets/image/nav/home_f.png) no-repeat center / 25px 25px;
     }
 
     .sort {
@@ -73,8 +75,7 @@ export default {};
     }
 
     .book {
-      background: url(@/assets/image/nav/book_f.png) no-repeat center / 25px
-        25px;
+      background: url(@/assets/image/nav/book_f.png) no-repeat center / 25px 25px;
     }
 
     .my {
@@ -84,38 +85,39 @@ export default {};
     &.router-link-exact-active {
       // background-color: skyblue;
       color: black;
-          .home {
-      background: url(@/assets/image/nav/home_t.png) no-repeat center / 25px
-        25px;
-    }
 
-    .sort {
-      background: url(@/assets/image/nav/fen_t.png) no-repeat center / 25px 25px;
-    }
+      .home {
+        background: url(@/assets/image/nav/home_t.png) no-repeat center / 25px 25px;
+      }
 
-    .book {
-      background: url(@/assets/image/nav/book_t.png) no-repeat center / 25px
-        25px;
-    }
+      .sort {
+        background: url(@/assets/image/nav/fen_t.png) no-repeat center / 25px 25px;
+      }
 
-    .my {
-      background: url(@/assets/image/nav/my_t.png) no-repeat center / 25px 25px;
-    }
+      .book {
+        background: url(@/assets/image/nav/book_t.png) no-repeat center / 25px 25px;
+      }
+
+      .my {
+        background: url(@/assets/image/nav/my_t.png) no-repeat center / 25px 25px;
+      }
     }
 
     img {
       width: 25px;
       height: 25px;
     }
+
     p {
       font-size: 13px;
     }
+
     .icon-bilibilidonghua {
       font-size: 28px;
     }
+
     .icon-xiaofangzi {
       font-size: 28px;
     }
   }
-}
-</style>
+}</style>

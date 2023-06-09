@@ -12,7 +12,7 @@
 </template>
 
 <script>
-//引入lodash库 使用其防抖函数
+// 引入lodash库 使用其防抖函数
 import _ from "lodash";
 
 export default {
@@ -24,7 +24,7 @@ export default {
   },
   data() {
     return {
-      suggest: [],
+      suggest: []
     };
   },
   created() {
@@ -32,31 +32,29 @@ export default {
   },
   methods: {
     async getSuggest() {
-      await this.axios.get("SearchSug?term=" + this.keyword).then((re) => {
+      await this.axios.get("SearchSug?term=" + this.keyword).then((data) => {
         // console.log(re);
-        this.suggest = re;
+        this.suggest = data;
       });
     },
     change(event) {
-      console.dir(event)
       this.$emit("search", event.target.innerText);
-    },
+    }
   },
   watch: {
     // keyword() {
     //   this.getSuggest();
     // },
-    //侦听关键词的时候用防抖函数。节约网络资源
+    // 侦听关键词的时候用防抖函数，节约网络资源
     keyword: _.debounce(function () {
-      console.log("搜索关键字??");
       this.getSuggest();
-    }, 200),
+    }, 200)
   },
   filters: {
     highLight(value, keyword) {
       return value.replace(keyword, `<i style="color:skyblue">${keyword}</i>`);
     },
-  },
+  }
 };
 </script>
 
@@ -68,6 +66,7 @@ export default {
       margin: 0 10px;
       display: flex;
       align-items: center;
+
       p {
         font-size: 14px;
         margin: 0 10px;

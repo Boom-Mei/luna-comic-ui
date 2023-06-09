@@ -17,13 +17,16 @@
 
 <script>
 import ImageS from "./ImageS.vue";
+
 export default {
+  components: {
+    ImageS
+  },
   data() {
     return {
       active: "回复我的",
     };
-  },
-  components: { ImageS },
+  }
 };
 </script>
 

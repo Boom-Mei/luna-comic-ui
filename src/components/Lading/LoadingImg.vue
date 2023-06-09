@@ -1,4 +1,4 @@
-    <!-- 加载中 -->
+<!-- 加载中 -->
 <template>
   <div class="loading">
     <img src="@/assets/image/加载中.jpg" />
@@ -6,6 +6,7 @@
     <h3>怎么还没好💢💢</h3>
   </div>
 </template>
+
 <script>
 export default {
   components: {},
@@ -15,17 +16,18 @@ export default {
   computed: {},
   watch: {},
   methods: {},
-  created() {},
-  mounted() {},
-  beforeCreate() {},
-  beforeMount() {},
-  beforeUpdate() {},
-  updated() {},
-  beforeDestroy() {},
-  destroyed() {},
-  activated() {},
+  created() { },
+  mounted() { },
+  beforeCreate() { },
+  beforeMount() { },
+  beforeUpdate() { },
+  updated() { },
+  beforeDestroy() { },
+  destroyed() { },
+  activated() { },
 };
 </script>
+
 <style lang='scss' scoped>
 .loading {
   width: 100%;
@@ -36,10 +38,9 @@ export default {
   justify-content: center;
   align-items: center;
   font-size: 15px;
-  
+
   img {
     width: 15%;
   }
-  
 }
 </style>

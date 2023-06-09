@@ -3,90 +3,48 @@
     <div class="box" v-if="sortList">
       <!-- 类型 -->
       <ul class="top">
-        <li
-          @click.stop="change1(s.id, s.name)"
-          v-for="s in sortList.styles"
-          :key="s.id"
-          v-html="s.name"
-          ref="li1"
-        ></li>
+        <li @click.stop="change1(s.id, s.name)" v-for="s in sortList.styles" :key="s.id" v-html="s.name" ref="li1"></li>
       </ul>
 
       <div class="main" ref="main">
         <!-- 国家 -->
         <ul class="box1">
-          <li
-            @click.stop="change2(a.id, a.name)"
-            v-for="a in sortList.areas"
-            :key="a.id"
-            v-html="a.name"
-            ref="li2"
-          ></li>
+          <li @click.stop="change2(a.id, a.name)" v-for="a in sortList.areas" :key="a.id" v-html="a.name" ref="li2"></li>
         </ul>
         <!-- 完结 -->
         <ul class="box2">
-          <li
-            @click.stop="change3(b.id, b.name)"
-            v-for="b in sortList.status"
-            :key="b.id"
-            v-html="b.name"
-            ref="li3"
-          ></li>
+          <li @click.stop="change3(b.id, b.name)" v-for="b in sortList.status" :key="b.id" v-html="b.name" ref="li3"></li>
         </ul>
         <!-- 免费 -->
         <ul class="box3">
-          <li
-            @click.stop="change4(d.id, d.name)"
-            v-for="d in sortList.prices"
-            :key="d.id"
-            v-html="d.name"
-            ref="li4"
-          ></li>
+          <li @click.stop="change4(d.id, d.name)" v-for="d in sortList.prices" :key="d.id" v-html="d.name" ref="li4"></li>
         </ul>
         <!-- 人气 -->
         <ul class="box4">
-          <van-icon name="arrow-down" v-if="!show" class="sx" @click.stop="sx"
-            >&nbsp;筛选</van-icon
-          >
-          <van-icon name="arrow-up" v-else class="sx" @click.stop="sx"
-            >&nbsp;筛选</van-icon
-          >
-          <li
-            @click.stop="change5(c.id, c.name)"
-            v-for="c in sortList.orders"
-            :key="c.id"
-            v-html="c.name"
-            ref="li5"
-          ></li>
+          <van-icon name="arrow-down" v-if="!show" class="sx" @click.stop="sx">&nbsp;筛选</van-icon>
+          <van-icon name="arrow-up" v-else class="sx" @click.stop="sx">&nbsp;筛选</van-icon>
+          <li @click.stop="change5(c.id, c.name)" v-for="c in sortList.orders" :key="c.id" v-html="c.name" ref="li5"></li>
         </ul>
       </div>
     </div>
 
     <!-- 加载中... -->
-    <van-loading
-      type="spinner"
-      size="24px"
-      text-size="18px"
-      color="skyblue"
-      class="load"
-      style="textAlign: center"
-      v-else
-      >加载中...
+    <van-loading type="spinner" size="24px" text-size="18px" color="skyblue" class="load" style="textAlign: center"
+      v-else>加载中...
     </van-loading>
 
-    <SortList
-      :styleId="styleId"
-      :areaId="areaId"
-      :orderId="orderId"
-      :isFreeId="isFreeId"
-      :isFinishId="isFinishId"
-    ></SortList>
+    <SortList :styleId="styleId" :areaId="areaId" :orderId="orderId" :isFreeId="isFreeId" :isFinishId="isFinishId">
+    </SortList>
   </div>
 </template>
 
 <script>
 import SortList from "../../components/Multiplex/SortList.vue";
+
 export default {
+  components: {
+    SortList
+  },
   data() {
     return {
       styleId: -1,
@@ -95,29 +53,28 @@ export default {
       isFreeId: -1,
       isFinishId: -1,
       sortList: [],
-      show: false,
+      show: false
     };
   },
   created() {
     this.getSort();
   },
-    mounted(){
+  mounted() {
     this.getSort();
   },
   methods: {
     async getSort() {
       await this.axios
         .get("AllLabel")
-        .then((re) => {
+        .then((data) => {
           // console.log("漫画分类===>", re);
-          let arr = re;
+          let arr = data;
           for (const i in arr) {
             if (i != "orders") {
               // console.log(arr[i]);
               arr[i].unshift({ id: -1, name: "全部" });
             }
           }
-          console.log(arr, "--------");
           this.sortList = arr;
         })
         .catch((error) => {
@@ -181,9 +138,8 @@ export default {
           this.$refs.li5[i].style.color = "black";
         }
       }
-    },
-  },
-  components: { SortList },
+    }
+  }
 };
 </script>
 
@@ -203,12 +159,14 @@ export default {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
+
       li {
         height: 20px;
         line-height: 20px;
         text-align: center;
         padding: 2px 9px;
         margin: 6px 0;
+
         &:nth-child(1) {
           color: skyblue;
         }
@@ -225,26 +183,31 @@ export default {
       flex-direction: column;
       position: relative;
       padding-bottom: 32px;
+
       ul {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
+
         li {
           height: 20px;
           line-height: 20px;
           text-align: center;
           padding: 2px 9px;
           margin: 6px 0;
+
           &:nth-of-type(1) {
             color: skyblue;
           }
         }
       }
+
       .box4 {
         width: 100%;
         position: absolute;
         bottom: 0;
         background-color: #fff;
+
         .sx {
           height: 20px;
           position: absolute;

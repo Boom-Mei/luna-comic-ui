@@ -6,7 +6,7 @@
     <ul v-if="todoList" class="manga">
       <li v-for="user in todoList" :key="user.rpid">
         <!-- 头像 -->
-        <img :src="user.member.avatar+ '@100w.jpg'" />
+        <img :src="user.member.avatar + '@100w.jpg'" />
 
         <div class="right_text">
           <!-- 名字 -->
@@ -22,13 +22,13 @@
           </div>
           <!-- 评论内容 -->
           <div class="content">
-            <p :class="{'expand':expand}">{{ user.content.message }}</p>
+            <p :class="{ 'expand': expand }">{{ user.content.message }}</p>
             <!-- 图标 -->
             <div class="tu">
               <span>
                 <van-icon name="good-job-o" size="18" />&nbsp;
-                <p>{{ user.like }}</p></span
-              >
+                <p>{{ user.like }}</p>
+              </span>
               <span>
                 <van-icon name="comment-o" size="18" />&nbsp;
                 <p>{{ user.rcount }}</p>
@@ -40,12 +40,8 @@
           <ul class="reply">
             <li v-for="man in user.replies" :key="man.rpid">
               <p>
-                <span>{{ man.member.uname }}</span
-                >{{ man.content.message }}
-                <img
-                  src="http://i0.hdslb.com/bfs/emote/6ea59c827c414b4a2955fe79e0f6fd3dcd515e24.png"
-                  alt=""
-                />
+                <span>{{ man.member.uname }}</span>{{ man.content.message }}
+                <img src="http://i0.hdslb.com/bfs/emote/6ea59c827c414b4a2955fe79e0f6fd3dcd515e24.png" alt="" />
               </p>
             </li>
             <li>
@@ -63,19 +59,23 @@ export default {
   props: {
     num: {
       type: Number,
-      default: 0,
+      default: 0
     },
     detailsid: {
       type: String,
-      default: null,
-    },
+      default: null
+    }
   },
   data() {
     return {
-      todoList: [], //评论列表
-      page: 10, //分页大小
-      mode: 3, //排序 1-默认，2-最新，3-热门
-      expand:false,//展开
+      // 评论列表
+      todoList: [],
+      // 分页大小
+      page: 10,
+      // 排序 1-默认，2-最新，3-热门
+      mode: 3,
+      // 展开
+      expand: false
     };
   },
   created() {
@@ -87,13 +87,11 @@ export default {
         .get(
           `ReplyMain?oid=${this.detailsid}&mode=${this.mode}&ps=${this.page}`
         )
-        .then((re) => {
-          //   console.log(re);
-          this.todoList = re.replies;
-          console.log(this.todoList);
+        .then((data) => {
+          this.todoList = data.replies;
         });
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -107,6 +105,7 @@ export default {
     font-weight: normal;
     border-bottom: 1px solid #ccc;
   }
+
   h6 {
     font-size: 13px;
     font-weight: normal;
@@ -116,6 +115,7 @@ export default {
   .manga {
     width: 100%;
     overflow: auto;
+
     li {
       flex: 1;
       //   border: 1px solid red;
@@ -128,9 +128,11 @@ export default {
         border-radius: 50%;
         margin-right: 10px;
       }
+
       .right_text {
         flex: 1;
         font-size: 14px;
+
         .name {
           span {
             font-size: 12px;
@@ -142,6 +144,7 @@ export default {
           font-size: 15px;
           color: black;
           margin: 10px 0;
+
           /* 图标 */
           .tu {
             margin: 10px 0 15px 0;
@@ -155,6 +158,7 @@ export default {
               text-align: center;
             }
           }
+
           p {
             display: -webkit-box;
             overflow: hidden;
@@ -172,10 +176,12 @@ export default {
           display: flex;
           flex-direction: column;
           background-color: #f5f6f8;
+
           span {
             color: skyblue;
             white-space: nowrap;
           }
+
           p {
             display: -webkit-box;
             width: 298px;

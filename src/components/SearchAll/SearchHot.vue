@@ -3,9 +3,7 @@
     <!-- 热门搜索 -->
     <h3>热门搜索</h3>
     <ul v-if="hotWords" class="hot-word">
-      <router-link
-        tag="li"
-        :to="`/details/${hot.season_id}`" v-for="(hot, index) in hotWords" :key="hot.season_id">
+      <router-link tag="li" :to="`/details/${hot.season_id}`" v-for="(hot, index) in hotWords" :key="hot.season_id">
         <div class="num">{{ index + 1 }}</div>
         <img :src="hot.horizontal_cover + '@200w.jpg'" />
         <div class="text">
@@ -42,31 +40,29 @@ export default {
     this.getHotWord();
   },
   methods: {
-    //热门搜索
+    // 热门搜索
     async getHotWord() {
-      await this.axios.get("SearchRecommend?num=8").then((re) => {
-        console.log("热门搜索===>", re);
-        this.hotWords = re.slice(0, 6);
+      await this.axios.get("SearchRecommend?num=8").then((data) => {
+        this.hotWords = data.slice(0, 6);
         this.getHistory();
       });
     },
-    //获取本地储存的数据
+    // 获取本地储存的数据
     getHistory() {
       let historyWord = localStorage.getItem("searchHistory");
-      console.log(historyWord);
       if (historyWord) {
         this.historyArr = JSON.parse(historyWord);
       }
     },
-    //删除本地数据
+    // 删除本地数据
     delHistory(word) {
       let historyWords = localStorage.getItem("searchHistory");
       historyWords = JSON.parse(historyWords).filter((v) => {
-        //过滤掉关键词
+        // 过滤掉关键词
         return v != word;
       });
       this.historyArr = historyWords;
-      //在把已经处理好的数据重新储存在本地服务器
+      // 在把已经处理好的数据重新储存在本地服务器
       localStorage.setItem("searchHistory", JSON.stringify(historyWords));
     },
   },
@@ -80,16 +76,19 @@ export default {
     color: #bbbbbb;
     margin: 10px;
   }
+
   .hot-word {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
+
     li {
       display: flex;
       align-items: center;
       width: 50%;
       height: 60px;
       padding: 10px 0;
+
       .num {
         font-weight: bold;
         font-size: 25px;
@@ -98,12 +97,15 @@ export default {
         color: #ccc;
         margin: 0 3px;
       }
+
       img {
         width: 50px;
         height: 100%;
       }
+
       .text {
         padding: 5px;
+
         p {
           width: 90px;
           font-size: 14px;
@@ -111,6 +113,7 @@ export default {
           text-overflow: ellipsis;
           overflow: hidden;
         }
+
         span {
           font-size: 12px;
           color: gray;
@@ -124,6 +127,7 @@ export default {
           background-clip: text;
         }
       }
+
       &:nth-child(2) {
         .num {
           color: transparent;
@@ -131,6 +135,7 @@ export default {
           background-clip: text;
         }
       }
+
       &:nth-child(3) {
         .num {
           color: transparent;

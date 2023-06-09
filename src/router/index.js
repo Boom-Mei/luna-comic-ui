@@ -4,7 +4,8 @@ import HomeView from '../views/panel/HomeView.vue'
 
 Vue.use(VueRouter)
 
-const routes = [{
+const routes = [
+  {
     path: '/',
     name: 'home',
     component: HomeView,
@@ -58,9 +59,7 @@ const routes = [{
     meta: {
       hideNav: true,
     }
-  },
-
-
+  }
 ]
 
 const router = new VueRouter({

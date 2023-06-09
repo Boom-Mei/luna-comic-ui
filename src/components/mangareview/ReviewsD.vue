@@ -1,6 +1,7 @@
 <template>
   <div class="reviews-d">
     <!-- <h3>漫画点评</h3> -->
+
     <div class="header">
       <h3>
         {{ name }}
@@ -10,14 +11,7 @@
           <span> {{ score }}</span>
           <div class="xx">
             <p>综合评分</p>
-            <van-rate
-              v-model="num"
-              allow-half
-              color="#ffd21e"
-              void-icon="star"
-              :size="15"
-              readonly
-            />
+            <van-rate v-model="num" allow-half color="#ffd21e" void-icon="star" :size="15" readonly />
           </div>
         </div>
 
@@ -34,34 +28,23 @@
         <div class="image">
           <img src="@/assets/image/头像.gif" />
         </div>
-        <!-- 内容 -->
+        <!-- 内容列表 -->
         <div class="text">
           <div class="star">
             <span>
               {{ mycomment.nick_name }}
             </span>
             <!-- 星星 -->
-            <van-rate
-              :value="mycomment.score / 2"
-              allow-half
-              color="#ffd21e"
-              void-icon="star"
-              :size="15"
-              readonly
-            />
+            <van-rate :value="mycomment.score / 2" allow-half color="#ffd21e" void-icon="star" :size="15" readonly />
           </div>
+          <!-- 评论内容 -->
           <p>
             {{ mycomment.content }}
           </p>
           <!-- 点赞 -->
           <div class="dian" @click.stop="mycomment.flag = !mycomment.flag">
             <!-- <van-icon name="good-job" class="d" /> -->
-            <van-icon
-              name="good-job-o"
-              size="18"
-              :class="{ red: mycomment.flag }"
-            />
-
+            <van-icon name="good-job-o" size="18" :class="{ red: mycomment.flag }" />
             {{
               mycomment.flag ? mycomment.like_count + 1 : mycomment.like_count
             }}
@@ -71,15 +54,8 @@
     </div>
 
     <!-- 发表评论 -->
-    <van-popup
-      v-model="showDian"
-      closeable
-      position="bottom"
-      :style="{ height: '100%' }"
-      title="发表评论"
-      close-icon="arrow-left"
-      close-icon-position="top-left"
-    >
+    <van-popup v-model="showDian" closeable position="bottom" :style="{ height: '100%' }" title="发表评论"
+      close-icon="arrow-left" close-icon-position="top-left">
       <PostComment :name="name" @postText="postText"></PostComment>
     </van-popup>
 
@@ -93,34 +69,43 @@
 <script>
 import CommentMain from "./CommentMain.vue";
 import PostComment from "./PostComment.vue";
-//ListReviews?comicId=
+
+// ListReviews?comicId=
 export default {
+  components: {
+    CommentMain,
+    PostComment
+  },
   props: {
     detailsid: {
       type: String,
-      default: null,
+      default: null
     },
     name: {
       type: String,
-      default: null,
+      default: null
     },
     value: {
       type: Number,
-      default: 3,
+      default: 3
     },
     score: {
-      default: 7,
-    },
+      default: 7
+    }
   },
   data() {
     return {
       todoList: [],
       num: this.value,
-      // score: 7, //评分
-      // sort: 1, //排序  1-时间 0-热度
+      // 评分
+      // score: 7,
+      // 排序：0-热度，1-时间
+      // sort: 1,
       review: true,
-      showDian: false, //发表评论
-      mycomment: [], //我的评论
+      // 发表评论
+      showDian: false,
+      // 我的评论
+      mycomment: []
     };
   },
   created() {
@@ -129,25 +114,21 @@ export default {
   watch: {
     postText() {
       this.getDate();
-      console.log("zzzzzzzzzzzz");
-    },
+    }
   },
   methods: {
     async getDate() {
       await this.axios
         .get(`ListReviews?sort=${this.sort}&comicId=${this.detailsid}`)
-        .then((re) => {
-          console.log("漫画点评========》", re);
-          this.todoList = re.reviews;
+        .then((data) => {
+          this.todoList = data.reviews;
         });
     },
     postText(obj) {
-      console.log("postText", obj);
       this.mycomment = obj;
       this.showDian = false;
-    },
-  },
-  components: { CommentMain, PostComment },
+    }
+  }
 };
 </script>
 

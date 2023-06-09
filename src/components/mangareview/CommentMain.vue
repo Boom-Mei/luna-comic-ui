@@ -7,7 +7,7 @@
       <li v-for="com in comList" :key="com.id">
         <!-- 头像 -->
         <div class="image">
-          <img :src="com.face+ '@200w.jpg'" />
+          <img :src="com.face + '@200w.jpg'" />
         </div>
 
         <!-- 内容 -->
@@ -17,14 +17,7 @@
               {{ com.nick_name }}
             </span>
             <!-- 星星 -->
-            <van-rate
-              :value="com.score / 2"
-              allow-half
-              color="#ffd21e"
-              void-icon="star"
-              :size="15"
-              readonly
-            />
+            <van-rate :value="com.score / 2" allow-half color="#ffd21e" void-icon="star" :size="15" readonly />
           </div>
 
           <p>
@@ -34,7 +27,6 @@
           <div class="dian" @click.stop="com.flag = !com.flag">
             <!-- <van-icon name="good-job" class="d" /> -->
             <van-icon name="good-job-o" size="18" :class="{ red: com.flag }" />
-
             {{ com.flag ? com.like_count + 1 : com.like_count }}
           </div>
         </div>
@@ -48,19 +40,22 @@ export default {
   props: {
     detailsid: {
       type: String,
-      default: "31351",
+      default: "31351"
     },
     review: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   data() {
     return {
       comList: [],
-      flag: false, //控制点赞
-      sort: 1, //排序  1-时间 0-热度
-      type: 0, //评论长短 0-短评 1-长评
+      // 控制点赞
+      flag: false,
+      // 排序：0-热度，1-时间
+      sort: 1,
+      // 评论长短：0-短评，1-长评
+      type: 0
     };
   },
   created() {
@@ -72,9 +67,8 @@ export default {
       if (this.review) {
         await this.axios
           .get(`ListReviews?sort=${this.sort}&comicId=${this.detailsid}`)
-          .then((re) => {
-            console.log("漫画点评========》", re);
-            this.comList = re.reviews.map((v) => {
+          .then((data) => {
+            this.comList = data.reviews.map((v) => {
               v.flag = false;
               return v;
             });
@@ -82,17 +76,16 @@ export default {
       } else {
         await this.axios
           .get("GetReviewDetailByComicID?comicId=" + this.detailsid)
-          .then((re) => {
-            this.comList = re.short_reviews.map((v) => {
+          .then((data) => {
+            this.comList = data.short_reviews.map((v) => {
               v.flag = false;
               return v;
             });
-            //   Number.toFixed(1)  四舍五入后，保留小数点后一位
-            console.log("漫画评论===>", this.comList);
+            // Number.toFixed(1): 四舍五入后，保留小数点后一位
           });
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

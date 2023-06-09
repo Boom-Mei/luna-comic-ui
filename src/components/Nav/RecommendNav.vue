@@ -4,24 +4,10 @@
 
     <!-- 轮播图 -->
     <div class="banner" v-if="bannerList">
-      <van-swipe
-        class="my-swipe"
-        :autoplay="3000"
-        indicator-color="white"
-        @change="onChange"
-      >
-        <van-swipe-item
-          v-for="b in bannerList"
-          :key="b.id"
-          :style="{ background: $store.state.recommendColor }"
-          class="item"
-        >
-          <a
-            tag="a"
-            :href="b.jump_value"
-            v-if="b.jump_value.indexOf('.html') != -1"
-            class="box"
-          >
+      <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white" @change="onChange">
+        <van-swipe-item v-for="b in bannerList" :key="b.id" :style="{ background: $store.state.recommendColor }"
+          class="item">
+          <a tag="a" :href="b.jump_value" v-if="b.jump_value.indexOf('.html') != -1" class="box">
             <!-- <img :src="b.img || b.img2" class="img" v-lazy="b.img || b.img2" /> -->
             <van-image :src="b.img + '@400w.jpg'" class="img">
               <template v-slot:loading>
@@ -30,12 +16,7 @@
               </template>
             </van-image>
           </a>
-          <router-link
-            v-else
-            tag="a"
-            :to="`/content${b.num2}${b.num1}`"
-            class="box"
-          >
+          <router-link v-else tag="a" :to="`/content${b.num2}${b.num1}`" class="box">
             <van-image :src="b.img + '@400w.jpg'" class="img">
               <template v-slot:loading>
                 <!-- <van-loading type="spinner" size="20" /> -->
@@ -81,18 +62,17 @@ export default {
   data() {
     return {
       close: true,
-      bannerList: [],
+      bannerList: []
     };
   },
-  mounted() {},
+  mounted() { },
   created() {
     this.getBanner();
   },
   methods: {
     getBanner() {
-      this.axios.get("https://apis.netstart.cn/bcomic/Banner").then((re) => {
-        console.log("首页推荐banner===>", re);
-        this.bannerList = re;
+      this.axios.get("https://apis.netstart.cn/bcomic/Banner").then((data) => {
+        this.bannerList = data;
         this.bannerList = this.bannerList.map((v) => {
           if (v.jump_value.indexOf("?") != -1) {
             let num = v.jump_value.match(/\/\d*/g);
@@ -104,11 +84,9 @@ export default {
           }
           return v;
         });
-        console.log(this.bannerList, "?????????");
       });
     },
     onChange(index) {
-      // console.log(index);
       if (this.$store.state.recommendColor === "#F8F9F9") {
         return;
       }
@@ -118,12 +96,12 @@ export default {
 };
 </script>
 
-
 <style lang="scss" scoped>
 .recommend-nav {
   .main {
     // margin-top: 5px;
     background-color: #fff;
+
     .ad {
       background: url("@/assets/image/new(1).png") no-repeat;
       background-size: 70px;
@@ -139,7 +117,8 @@ export default {
       margin: 0 auto;
       margin-top: 15px;
       position: relative;
-      letter-spacing: 1px; //文字间距
+      // 文字间距
+      letter-spacing: 1px;
 
       .text {
         margin-left: 70px;
@@ -198,6 +177,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
   p {
     font-size: 20px;
     text-indent: 3px;
