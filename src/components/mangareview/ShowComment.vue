@@ -61,7 +61,7 @@ export default {
       type: Number,
       default: 0
     },
-    detailsid: {
+    bookId: {
       type: String,
       default: null
     }
@@ -79,13 +79,13 @@ export default {
     };
   },
   created() {
-    this.getDate();
+    this.getData();
   },
   methods: {
-    async getDate() {
+    async getData() {
       await this.axios
         .get(
-          `ReplyMain?oid=${this.detailsid}&mode=${this.mode}&ps=${this.page}`
+          `ReplyMain?oid=${this.bookId}&mode=${this.mode}&ps=${this.page}`
         )
         .then((data) => {
           this.todoList = data.replies;

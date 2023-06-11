@@ -16,6 +16,10 @@ import 'vant/lib/index.css';
 import { Lazyload } from 'vant';
 // 引入3D轮播图
 import Carousel3d from 'vue-carousel-3d';
+// 引入axios
+import axios from './plugins/axios'
+
+Vue.prototype.$axios = axios
 
 Vue.use(Vant).use(Carousel3d).use(Lazyload, {
   lazyComponent: true,

@@ -1,33 +1,33 @@
 <template>
   <div class="comment-main">
     <!-- <h3>漫画评论</h3> -->
-    <!-- {{ detailsid }} -->
 
-    <ul v-if="comList" class="all">
-      <li v-for="com in comList" :key="com.id">
+    <ul v-if="commentList" class="all">
+      <li v-for="comment in commentList" :key="comment.id">
         <!-- 头像 -->
         <div class="image">
-          <img :src="com.face + '@200w.jpg'" />
+          <!-- todo: 这个头像怎么办 -->
+          <img :src="comment.face" />
         </div>
 
         <!-- 内容 -->
         <div class="text">
           <div class="star">
             <span>
-              {{ com.nick_name }}
+              {{ comment.userName }}
             </span>
             <!-- 星星 -->
-            <van-rate :value="com.score / 2" allow-half color="#ffd21e" void-icon="star" :size="15" readonly />
+            <van-rate :value="comment.score / 2" allow-half color="#ffd21e" void-icon="star" :size="15" readonly />
           </div>
 
           <p>
-            {{ com.content }}
+            {{ comment.content }}
           </p>
           <!-- 点赞 -->
-          <div class="dian" @click.stop="com.flag = !com.flag">
+          <div class="dian" @click.stop="comment.flag = !comment.flag">
             <!-- <van-icon name="good-job" class="d" /> -->
-            <van-icon name="good-job-o" size="18" :class="{ red: com.flag }" />
-            {{ com.flag ? com.like_count + 1 : com.like_count }}
+            <van-icon name="good-job-o" size="18" :class="{ red: comment.flag }" />
+            {{ comment.flag ? comment.like + 1 : comment.like }}
           </div>
         </div>
       </li>
@@ -38,9 +38,9 @@
 <script>
 export default {
   props: {
-    detailsid: {
+    bookId: {
       type: String,
-      default: "31351"
+      default: "1"
     },
     review: {
       type: Boolean,
@@ -49,7 +49,7 @@ export default {
   },
   data() {
     return {
-      comList: [],
+      commentList: [],
       // 控制点赞
       flag: false,
       // 排序：0-热度，1-时间
@@ -59,31 +59,30 @@ export default {
     };
   },
   created() {
-    this.getDate();
+    this.getData();
   },
   computed: {},
   methods: {
-    async getDate() {
-      if (this.review) {
-        await this.axios
-          .get(`ListReviews?sort=${this.sort}&comicId=${this.detailsid}`)
-          .then((data) => {
-            this.comList = data.reviews.map((v) => {
-              v.flag = false;
-              return v;
-            });
+    async getData() {
+      await this.$axios.get("/api/comment/list", {
+        params: {
+          bookId: this.bookId,
+          type: 1,
+          pageNo: 1,
+          pageSize: this.review ? 20 : 2
+        }
+      })
+        .then((data) => {
+          // data是请求返回
+          // data.data是请求返回的数据信息
+          this.commentList = data.data.data.dataList;
+          this.commentList = this.commentList.map((v) => {
+            v.face = "";
+            v.score = 9.2;
+            v.flag = false;
+            return v;
           });
-      } else {
-        await this.axios
-          .get("GetReviewDetailByComicID?comicId=" + this.detailsid)
-          .then((data) => {
-            this.comList = data.short_reviews.map((v) => {
-              v.flag = false;
-              return v;
-            });
-            // Number.toFixed(1): 四舍五入后，保留小数点后一位
-          });
-      }
+        });
     }
   }
 };

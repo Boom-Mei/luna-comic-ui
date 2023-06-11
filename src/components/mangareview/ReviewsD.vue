@@ -109,15 +109,15 @@ export default {
     };
   },
   created() {
-    // this.getDate();
+    // this.getData();
   },
   watch: {
     postText() {
-      this.getDate();
+      this.getData();
     }
   },
   methods: {
-    async getDate() {
+    async getData() {
       await this.axios
         .get(`ListReviews?sort=${this.sort}&comicId=${this.detailsid}`)
         .then((data) => {

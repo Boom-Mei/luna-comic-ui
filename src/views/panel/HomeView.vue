@@ -41,13 +41,10 @@
       " :color="'rgba(0,0,0,0)'" title-active-color="skyblue" title-inactive-color="#303133" :border="false"
         @click="onClick" ref="tab">
         <van-tab title="热门" name="热门" class="reMen">
-          <hot-nav :slides="slides" :sex="sex"></hot-nav>
+          <hot-nav :bannerList="bannerList" :sex="sex"></hot-nav>
         </van-tab>
         <van-tab title="推荐" name="推荐">
           <recommend-nav></recommend-nav>
-          <ToDo v-if="todoList.length" :todoList="todoList"></ToDo>
-          <LoadingImg v-else></LoadingImg>
-          <div class="more" @click.stop="addMore">加载更多...</div>
         </van-tab>
         <van-tab title="男生" name="男生">
           <sex-nav :sex="sex"></sex-nav>
@@ -64,8 +61,6 @@
 import HotNav from "@/components/Nav/HotNav.vue";
 import RecommendNav from "@/components/Nav/RecommendNav.vue";
 import SexNav from "@/components/Nav/SexNav.vue";
-import ToDo from "@/components/Multiplex/ToDo.vue";
-import LoadingImg from "@/components/Lading/LoadingImg.vue";
 
 export default {
   name: "HomeView",
@@ -73,38 +68,34 @@ export default {
     HotNav,
     RecommendNav,
     SexNav,
-    ToDo,
-    LoadingImg,
   },
   props: {},
   data() {
     return {
       active: "",
       // 热门轮播图地址
-      slides: null,
-      // 推荐轮播图
       bannerList: null,
       // 男生
       boy: 263,
       // 女生
       girl: 262,
       sex: "",
-      todoList: [],
-      page: 2,
       scrolltop: 0
     };
   },
-  mounted() {
-    this.getDate();
-  },
+  // mounted可以访问DOM元素，适合DOM完全加载后的所有操作
+  // mounted() {
+  //   console.log("mounted");
+  //   this.getData();
+  // },
+  // mounted不可以访问DOM元素，适合访问API
   created() {
-    this.getDate();
+    this.getData();
   },
   watch: {
     active() {
       let name = window.localStorage.getItem("homeActive");
       if (name) {
-        console.log("监听active", name);
         this.active = name;
         if (name == "男生" || name == "女生") {
           this.sex = name;
@@ -113,39 +104,43 @@ export default {
     },
   },
   methods: {
-    async getDate(offset = 10) {
-      await this.axios.get("GetClassPageHomeBanner?id=1145").then((data) => {
-        // this.slides = data.banner;
-        this.slides = data.banner.map((v) => {
-          if (v.jump_url.indexOf("detail" != -1)) {
-            v.numID = v.jump_url.match(/\d+/g)[0];
-          }
-          return v;
-        });
-        console.log("热门banner===>", this.slides);
-      });
-      this.axios.get("HomeFeed?pageNum=1&pageSize=10").then((data) => {
-        this.todoList = data.feeds;
-        this.todoList = this.todoList.slice(0, offset);
-      });
+    async getData() {
+      // this.$axios.post("/api/banner/list", {
+      //   type: 1,
+      //   pageNo: 1,
+      //   pageSize: 3
+      // })
+
+      // this.$axios({
+      //   url: "/api/banner/list",
+      //   method: "get",
+      //   params: {
+      //     type: 1,
+      //     pageNo: 1,
+      //     pageSize: 3
+      //   }
+      // })
+      
+      await this.$axios.get("/api/banner/list", {
+        params: {
+          type: 1,
+          pageNo: 1,
+          pageSize: 3
+        }
+      })
+        .then((data) => {
+          // data是请求返回
+          // data.data是请求返回的数据信息
+          this.bannerList = data.data.data.dataList;
+        })
     },
     onClick(name, title) {
       // this.$toast(title);
       localStorage.setItem("homeActive", name);
-      console.log(name);
       this.sex = title;
     },
-    addMore() {
-      this.page++;
-      let offset = 10 * (this.page - 1);
-      this.getDate(offset);
-      this.$toast.loading({
-        message: "加载中...",
-        forbidClick: true,
-      });
-    },
     scrollTop(e) {
-      console.log(e);
+      // console.log(e);
       let top = e.scrollTop;
       this.scrolltop = top;
       if (top > 100) {
@@ -178,13 +173,6 @@ export default {
     filter: blur(30px);
   }
 
-  .more {
-    background-color: #fff;
-    text-align: center;
-    font-size: 14px;
-    color: gray;
-    height: 40px;
-  }
 
   .header {
     width: 100%;

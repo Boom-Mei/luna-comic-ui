@@ -6,25 +6,25 @@
     {{ isFreeId }}
     {{ isFinishId }} -->
 
-    <ul v-if="todoList.length" class="todo">
-      <router-link tag="li" :to="`/details/${to.season_id}`" v-for="to in todoList" :key="to.season_id">
-        <van-image :src="to.vertical_cover + '@200w.jpg'" fit="cover" radius="5px" width="120" height="138">
+    <ul v-if="bookList.length" class="todo">
+      <router-link tag="li" :to="`/details/${book.id}`" v-for="book in bookList" :key="book.id">
+        <van-image :src="book.coverUrl" fit="cover" radius="5px" width="120" height="138">
           <template v-slot:loading>
             <img src="@/assets/image/没有.png" class="loadImg" />
           </template>
         </van-image>
         <!-- <img
-          :src="to.vertical_cover + '@200w.jpg'"
-          v-lazy="to.vertical_cover + '@200w.jpg'"
+          :src="book.coverUrl"
+          v-lazy="book.coverUrl"
         /> -->
         <p>
-          {{ to.title }}
+          {{ book.bookName }}
         </p>
         <span>
           {{
-            to.total == to.last_ord
-            ? `[完结]共${to.total}话`
-            : `更新至${to.last_short_title}话`
+            book.end == 1
+            ? `[完结]共${book.chapterCount}话`
+            : `更新至${book.chapterCount}话`
           }}
         </span>
       </router-link>
@@ -46,65 +46,65 @@ export default {
   props: {
     styleId: {
       type: Number,
-      default: -1,
+      default: -1
     },
     areaId: {
       type: Number,
-      default: -1,
+      default: -1
     },
     orderId: {
       type: Number,
-      default: 0,
+      default: 0
     },
     isFreeId: {
       type: Number,
-      default: -1,
+      default: -1
     },
     isFinishId: {
       type: Number,
-      default: -1,
+      default: -1
     }
   },
   data() {
     return {
-      todoList: [],
-      page: 2
+      bookList: [],
+      page: 1
     };
   },
   created() {
-    this.getSort();
+    this.getData();
   },
   watch: {
     styleId: _.debounce(function () {
-      this.getSort();
+      this.getData();
       this.$toast.loading({
         message: "加载中...",
         forbidClick: true,
       });
     }, 200),
     areaId: _.debounce(function () {
-      this.getSort();
+      this.getData();
       this.$toast.loading({
         message: "加载中...",
         forbidClick: true,
       });
     }, 200),
     orderId: _.debounce(function () {
-      this.getSort();
+      this.getData();
       this.$toast.loading({
         message: "加载中...",
         forbidClick: true,
       });
     }, 200),
     isFreeId: _.debounce(function () {
-      this.getSort();
+      this.getData();
       this.$toast.loading({
         message: "加载中...",
         forbidClick: true,
       });
     }, 200),
     isFinishId: _.debounce(function () {
-      this.getSort();
+      this.getData();
       this.$toast.loading({
         message: "加载中...",
         forbidClick: true,
@@ -112,21 +112,41 @@ export default {
     }, 200)
   },
   methods: {
-    async getSort(offset = 9) {
-      await this.axios
-        .get(
-          `ClassPage?styleId=${this.styleId}&areaId=${this.areaId}&isFinish=${this.isFinishId}&order=${this.orderId}&pageNum=1&pageSize=300&isFree=${this.isFreeId}`
-        )
-        .then((re) => {
-          console.log("fenlei===", re);
-          this.todoList = re;
-          this.todoList = this.todoList.slice(0, offset);
+    getData() {
+      this.$axios.get("/api/book/list", {
+        params: {
+          pageNo: 1,
+          pageSize: 9
+        }
+      })
+        .then((data) => {
+          this.bookList = data.data.data.dataList;
+          if (this.bookList.length == 0) {
+            this.$toast("没有更多了~");
+            return;
+          }
         });
     },
     addMore() {
+      if (this.page >= 3) {
+        this.$toast("没有更多了~");
+        return;
+      }
       this.page++;
-      let offset = 9 * (this.page - 1);
-      this.getSort(offset);
+      this.$axios.get("/api/book/list", {
+        params: {
+          pageNo: this.page,
+          pageSize: 9
+        }
+      })
+        .then((data) => {
+          let arr = data.data.data.dataList;
+          if (arr.length == 0) {
+            this.$toast("没有更多了~");
+            return;
+          }
+          this.bookList.push(...arr);
+        });
       this.$toast.loading({
         message: "加载中...",
         forbidClick: true,
@@ -145,7 +165,7 @@ export default {
     height: 40px;
   }
 
-  .todoList {
+  .bookList {
     width: 100%;
     // padding: 0 7px;
     display: flex;

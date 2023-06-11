@@ -16,7 +16,7 @@
     <!-- 除了home组件和about组件别的都缓存  <keep-alive exclude="home,about" > -->
     <div class="app" v-else>
       <keep-alive include="home,my,bookshelf,details,sort" v-if="showNav">
-        <router-view>
+        <router-view v-if="showNav">
           <slot></slot>
         </router-view>
       </keep-alive>
@@ -47,6 +47,7 @@ export default {
   methods: {
     btn() {
       this.$store.commit("changeVideo", false);
+      this.showNav = true;
     },
     advertise() {
       if (this.$store.state.showVideo) {

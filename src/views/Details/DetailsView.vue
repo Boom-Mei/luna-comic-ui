@@ -1,5 +1,5 @@
 <template>
-  <div class="details" v-if="mainList.horizontal_cover">
+  <div class="details" v-if="bookDetail.coverUrl">
     <!-- <h3>内容详情</h3> -->
 
     <!-- 头部 -->
@@ -14,15 +14,14 @@
 
     <!-- banner图 -->
     <div class="banner">
-      <van-image :src="mainList.horizontal_cover">
+      <van-image :src="bookDetail.bannerUrl">
         <template v-slot:loading>
           <!-- <van-loading type="spinner" size="20" /> -->
           <img src="@/assets/image/加载失败.png" style="width: 375px,height: 200px" />
         </template>
       </van-image>
-      <!-- <img :src="mainList.horizontal_cover" alt="" /> -->
       <!-- 追漫按钮 -->
-      <div :class="['chase', { yes: flag }, { no: !flag }]" @click.stop="chase(mainList)">
+      <div :class="['chase', { yes: flag }, { no: !flag }]" @click.stop="chase(bookDetail)">
         {{ flag ? "已追" : "追漫" }}
       </div>
     </div>
@@ -41,15 +40,16 @@
     </div>
 
     <!-- 连载中 -->
-    <h6>连载中 &nbsp; {{ mainList.renewal_time }}</h6>
+    <h6>连载中 &nbsp; {{ bookDetail.updatedAt }}</h6>
 
     <!-- 简介 -->
     <div :class="['text', { text_1: dow }, { text_2: !dow }]">
-      <div class="header" v-if="mainList.author_name">
+      <div class="header" v-if="bookDetail.authorName">
         <span>
-          {{ mainList.author_name[0] }} ·
-          {{ mainList.styles[0] || mainList.styles2[0] }} &nbsp; | &nbsp;
-          已更新{{ mainList.last_short_title }}话
+          <!-- todo: 这里的显示 -->
+          <!-- {{ bookDetail.authorName }} · -->
+          <!-- {{ bookDetail.styles[0] || bookDetail.styles2[0] }} &nbsp; | &nbsp; -->
+          已更新{{ bookDetail.chapterCount }}话
         </span>
 
         <span @click.stop="dow = !dow">
@@ -60,16 +60,16 @@
       </div>
 
       <div class="worker">
-        作者：<span v-for="(work, index) in mainList.author_name" :key="index">
-          {{ work }} 、</span>
+        作者：<span>
+          {{ bookDetail.authorName }} 、</span>
       </div>
 
-      <div class="text_main">简介：{{ mainList.classic_lines }}</div>
+      <div class="text_main">简介：{{ bookDetail.summary }}</div>
     </div>
 
     <!-- 评论和推荐 -->
     <!-- todo: 这里如果没有评论的话，连推荐也显示不出来了 -->
-    <div class="comment" v-if="comList">
+    <div class="comment" v-if="commentList">
       <van-tabs scrollspy sticky>
         <van-tab title="互动点评">
           <div style="height: 10px"></div>
@@ -81,7 +81,7 @@
               <van-icon name="arrow" />
             </span>
           </div>
-          <comment-main :detailsid="detailsid"></comment-main>
+          <comment-main :bookId="bookId"></comment-main>
           <!-- 讨论区 -->
           <div class="forum" v-if="num" @click.stop="showComment = true">
             <p>漫画讨论区</p>
@@ -103,28 +103,27 @@
 
     <!-- 开始阅读 -->
     <div class="read">
-      <!-- 目录 -->
+      <!-- 底部目录 -->
       <div class="left" @click.stop="showPopup">
         <van-icon name="description" color="gray" size="25" />
         <span>目录</span>
       </div>
 
-      <!-- index + 1 < 10 ? "0" + "0" + (index + 1) : index + 1 && index + 1 < 100 ? "0" + (index + 1) : index + 1 }} -->
-      <ul class="top_all" v-if="mainList">
-        <router-link tag="li" :to="`/content/${item.id}/${detailsid}`" v-for="(item, index) in chapter" :key="item.id">
-          {{ index + 1 }}
+      <ul class="top_all" v-if="bookDetail">
+        <router-link tag="li" :to="`/content/${bookId}/${chapter.id}`" v-for="chapter in chapterList" :key="chapter.id">
+          {{ chapter.chapterOrder }}
         </router-link>
       </ul>
-      <router-link :to="`/content/${gainId}/${detailsid}`" v-if="gainId">
+      <router-link :to="`/content/${bookId}/${gainId}`" v-if="gainId">
         <div class="right">{{ text }}</div>
       </router-link>
     </div>
 
     <!-- 目录列表 -->
     <van-popup v-model="show" position="bottom" :style="{ height: '60%' }">
-      <div class="box" v-if="mainList">
+      <div class="box" v-if="bookDetail">
         <div class="title_top">
-          <h3>全部章节({{ mainList.total }})</h3>
+          <h3>全部章节({{ bookDetail.chapterCount }})</h3>
           <span>批量优惠</span>
         </div>
         <div class="money" @click.stop="who = true">
@@ -135,22 +134,21 @@
           <van-icon name="question-o" size="16" />
         </div>
         <!-- 章节 -->
-        <ul class="chapter" v-if="chapter">
-          <router-link tag="li" :to="`/content/${cha.id}/${detailsid}`" v-for="cha in chapter" :key="cha.id"
-            @click.stop="moveIn(cha)">
-            <img :src="cha.cover + '@200w.jpg'" />
+        <ul class="chapter" v-if="chapterList">
+          <router-link tag="li" :to="`/content/${bookId}/${chapter.id}`" v-for="chapter in chapterList" :key="chapter.id"
+            @click.stop="moveIn(chapter)">
+            <img :src="chapter.coverUrl" />
             <div class="name_text">
-              <p :class="{ active_true: cha.change }">
-                <!-- {{ cha.ord }} &nbsp; {{ cha.title }} -->
-                {{ cha.title }}
+              <p :class="{ active_true: chapter.change }">
+                {{ chapter.chapterName }}
               </p>
               <span>
-                {{ cha.pub_time.substr(5, 5) }} &nbsp;
-                <van-icon name="comment" /> {{ cha.comments }} &nbsp;
-                <van-icon name="good-job" /> {{ cha.like_count }}
+                {{ chapter.updatedAt.substr(5, 5) }} &nbsp;
+                <van-icon name="comment" /> {{ chapter.commentCount }} &nbsp;
+                <van-icon name="good-job" /> {{ chapter.like }}
               </span>
             </div>
-            <van-icon v-show="cha.change" name="location" class="xz" color="skyblue" size="15" />
+            <van-icon v-show="chapter.change" name="location" class="xz" color="skyblue" size="15" />
           </router-link>
         </ul>
 
@@ -180,12 +178,12 @@
     <!-- 漫画点评 -->
     <van-popup v-model="showDian" closeable position="bottom" :style="{ height: '100%' }" title="漫画点评"
       close-icon-position="top-left">
-      <ReviewsD :detailsid="detailsid" :value="value" :score="score" :name="name"></ReviewsD>
+      <ReviewsD :detailsid="bookId" :value="value" :score="score" :name="name"></ReviewsD>
     </van-popup>
 
     <!-- 讨论区列表 -->
     <van-popup v-model="showComment" closeable position="bottom" :style="{ height: '100%' }">
-      <ShowComment :num="num" :detailsid="detailsid"></ShowComment>
+      <ShowComment :num="num" :bookId="bookId"></ShowComment>
     </van-popup>
     <!-- 底部 -->
   </div>
@@ -212,17 +210,19 @@ export default {
     LoadingImg
   },
   props: {
-    detailsid: {
+    bookId: {
       type: String,
-      default: null,
-    },
+      default: null
+    }
   },
   data() {
     return {
       // 漫画内容
-      mainList: [],
+      bookDetail: [],
+      // 章节
+      chapterList: [],
       // 漫画评论
-      comList: [],
+      commentList: [],
       // 是否已追漫标志，true-已追
       flag: false,
       dow: true,
@@ -240,8 +240,6 @@ export default {
       show: false,
       // 讨论区
       showComment: false,
-      // 章节
-      chapter: [],
       // 顺序
       orders: true,
       who: false,
@@ -269,7 +267,7 @@ export default {
       // 默认开始阅读第一章
       gainId: 0,
       jumpName: "home",
-      text: "开始阅读",
+      text: "开始阅读"
     };
   },
   // beforeRouteEnter(to, from, next) {
@@ -285,14 +283,14 @@ export default {
   //   next();
   // },
   created() {
-    this.getDate();
+    this.getData();
     this.check();
     this.changeColor();
   },
-  mounted() {
-    this.getDate();
-    this.changeColor();
-  },
+  // mounted() {
+  //   this.getData();
+  //   this.changeColor();
+  // },
   afterEach() {
     this.changeColor();
   },
@@ -304,52 +302,84 @@ export default {
     },
     "$store.state.historyList"() {
       this.check();
-    }
+    },
+    '$route': ['getData', 'check', 'changeColor']
   },
   methods: {
-    async getDate() {
-      await this.axios
-        .get("ComicDetail?comicId=" + this.detailsid)
+    async getData() {
+      await this.$axios.get("/api/book/detail", {
+        params: {
+          id: this.bookId
+        }
+      })
         .then((data) => {
-          this.$store.commit("addImgSrc", data.vertical_cover);
-          this.mainList = data;
+          // data是请求返回
+          // data.data是请求返回的数据信息
+          this.bookDetail = data.data.data;
+          this.$store.commit("addImgSrc", this.bookDetail.coverUrl);
           // 添加历史记录
-          // this.$store.commit("addHistory", data);
-          this.name = this.mainList.title;
-          this.chapter = _.reverse(
-            data.ep_list.map((v) => {
-              // todo: 章节没有做付费控制
-              v.change = false;
-              return v;
-            })
-          );
-          // 默认第一章
-          this.gainId = this.chapter[0].id;
+          // this.$store.commit("addHistory", this.bookDetail);
+          this.name = this.bookDetail.bookName;
+          // this.score = this.bookDetail.score.toFixed(1);
+          // this.value = this.score / 2;
+          // this.watch = (this.bookDetail.watch / 10000).toFixed(1) + "万";
+          //   Number.toFixed(1)  四舍五入后，保留小数点后一位
+          this.score = 9.0;
+          this.value = this.score / 2;
+          this.watch = 10.1 + "万";
           this.check();
         });
-      await this.axios
-        .get("GetReviewDetailByComicID?comicId=" + this.detailsid)
-        .then((data) => {
-          this.comList = data;
-          this.score = data.score.toFixed(1);
-          this.value = this.score / 2;
-          this.watch = (data.watch / 10000).toFixed(1) + "万";
-          //   Number.toFixed(1)  四舍五入后，保留小数点后一位
-          //   console.log("漫画评论===>", this.comList);
-        });
-      await this.axios.get("ReplyMain?oid=" + this.detailsid)
-      .then((data) => {
-        let num = data;
-        if (num.cursor.all_count != undefined) {
-          this.num = data.cursor.all_count;
+      await this.$axios.get("/api/chapter/list", {
+        params: {
+          bookId: this.bookId,
+          pageNo: 1,
+          pageSize: 50
         }
-      });
+      })
+        .then((data) => {
+          // data是请求返回
+          // data.data是请求返回的数据信息
+          this.chapterList = data.data.data.dataList;
+          // this.chapterList = _.reverse(
+          this.chapterList = this.chapterList.map((v) => {
+            // todo: 章节没有做付费控制
+            v.change = false;
+            v.commentCount = 101;
+            v.like = 365;
+            v.updatedAt = "2023-06-11 12:21:35"
+            return v;
+          });
+          if (this.chapterList.length == 0) {
+            return;
+          }
+          // 默认第一章
+          this.gainId = this.chapterList[0].id;
+        });
+      // todo: 这个到底要不要在这里请求
+      await this.$axios.get("/api/comment/list", {
+        params: {
+          bookId: this.bookId,
+          type: 1,
+          pageNo: 1,
+          pageSize: 2
+        }
+      })
+        .then((data) => {
+          // data是请求返回
+          // data.data是请求返回的数据信息
+          this.commentList = data.data.data.dataList;
+          let num = data.data.data.total;
+          if (num != undefined) {
+            this.num = data.data.data.total;
+          }
+          // console.log("漫画评论===>", this.commentList);
+        });
     },
     // 判断是否看过这本书
     check() {
       let arr = this.$store.state.historyList;
       arr.forEach((i) => {
-        if (i.id == this.detailsid) {
+        if (i.id == this.bookId) {
           this.gainId = i.chapterID;
           this.text = "继续观看";
         }
@@ -386,12 +416,12 @@ export default {
       this.$store.commit("addBook", obj);
     },
     removeList() {
-      this.$store.commit("removeBook", this.detailsid);
+      this.$store.commit("removeBook", this.bookId);
     },
     // 修改追漫高亮
     changeColor() {
       this.$store.state.bookList.forEach((item) => {
-        if (item.id == this.detailsid) {
+        if (item.id == this.bookId) {
           this.flag = true;
         }
       });
@@ -405,9 +435,9 @@ export default {
     changOrder() {
       this.orders = !this.orders;
       if (!this.orders) {
-        this.chapter = _.reverse(this.chapter);
+        this.chapterList = _.reverse(this.chapterList);
       } else {
-        this.chapter = _.reverse(this.chapter);
+        this.chapterList = _.reverse(this.chapterList);
       }
     },
     // 点击目录按钮
@@ -599,6 +629,7 @@ export default {
   .read {
     height: 50px;
     width: 100vw;
+    z-index: 8;
     position: fixed;
     bottom: 0;
     background-color: #fff;

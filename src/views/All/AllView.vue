@@ -6,20 +6,20 @@
       <van-nav-bar :title="allname" left-text="返回" left-arrow @click-left="onClickLeft" class="title_top"
         :border="false" />
     </van-sticky>
-    <ul v-if="alList" class="all_main">
-      <router-link tag="li" :to="`/details/${item.item_id}`" v-for="item in alList" :key="item.item_id">
+    <ul v-if="allList" class="all_main">
+      <router-link tag="li" :to="`/details/${item.id}`" v-for="item in allList" :key="item.id">
         <!-- 左边头像 -->
         <div class="avatar">
-          <img :src="item.image" v-lazy="item.image" />
+          <img :src="item.coverUrl" v-lazy="item.coverUrl" />
         </div>
         <!-- 右边内容 -->
         <div class="text">
-          <p>{{ item.title }}</p>
-          <span v-if="item.comic_info.decision">{{
-            item.comic_info.decision
+          <p>{{ item.bookName }}</p>
+          <span v-if="item.summary">{{
+            item.summary
           }}</span>
-          <span v-if="item.comic_info.lastest_short_title">{{
-            "更新至" + item.comic_info.lastest_short_title + "话"
+          <span v-if="item.chapterCount">{{
+            "更新至" + item.chapterCount + "话"
           }}</span>
         </div>
       </router-link>
@@ -30,7 +30,7 @@
       v-else>加载中...
     </van-loading>
     <div class="bottom_tab">
-      <van-pagination v-if="alList.length" v-model="currentPage" :total-items="24" :items-per-page="5"
+      <van-pagination v-if="allList.length" v-model="currentPage" :total-items="24" :items-per-page="5"
         @change="changeDate" @black="'#000'" />
     </div>
   </div>
@@ -50,33 +50,35 @@ export default {
   },
   data() {
     return {
-      alList: [],
+      allList: [],
       currentPage: 1
     };
   },
   created() {
-    this.getDate();
+    this.getData();
   },
-  mounted() {
-    this.getDate(this.currentPage);
-    this.currentPage;
-  },
+  // mounted() {
+  //   this.getData(this.currentPage);
+  // },
   // beforeRouteEnter(){
-  // this.getDate()
+  // this.getData()
 
   // },
   // beforeRouteUpdate() {
-  // this.getDate()
+  // this.getData()
   // },
   methods: {
     // 获取数据
-    getDate() {
-      this.axios
-        .get(
-          `GetHomeSecondaryComics?moduleId=${this.allid}&pageNum=${this.currentPage}&pageSize=10`
-        )
+    getData() {
+      // todo: 更改这个请求
+      this.$axios.get("/api/book/list", {
+        params: {
+          pageNo: this.currentPage,
+          pageSize: 10
+        }
+      })
         .then((data) => {
-          this.alList = data.comics;
+          this.allList = data.data.data.dataList;
         });
     },
     // 返回
@@ -86,9 +88,9 @@ export default {
     },
     // 分页
     changeDate() {
-      this.getDate(this.currentPage);
+      this.getData(this.currentPage);
     }
-  },
+  }
 };
 </script>
 

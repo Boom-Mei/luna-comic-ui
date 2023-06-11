@@ -5,25 +5,23 @@
     <!-- 轮播图 -->
     <div class="banner" v-if="bannerList">
       <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white" @change="onChange">
-        <van-swipe-item v-for="b in bannerList" :key="b.id" :style="{ background: $store.state.recommendColor }"
+        <van-swipe-item v-for="banner in bannerList" :key="banner.id" :style="{ background: $store.state.recommendColor }"
           class="item">
-          <a tag="a" :href="b.jump_value" v-if="b.jump_value.indexOf('.html') != -1" class="box">
-            <!-- <img :src="b.img || b.img2" class="img" v-lazy="b.img || b.img2" /> -->
-            <van-image :src="b.img + '@400w.jpg'" class="img">
+          <a tag="a" :href="banner.jumpUrl" v-if="banner.jumpUrl" class="box">
+            <van-image :src="banner.picUrl" class="img">
               <template v-slot:loading>
                 <!-- <van-loading type="spinner" size="20" /> -->
                 <img src="@/assets/image/没有.png" />
               </template>
             </van-image>
           </a>
-          <router-link v-else tag="a" :to="`/content${b.num2}${b.num1}`" class="box">
-            <van-image :src="b.img + '@400w.jpg'" class="img">
+          <router-link v-else tag="a" :to="`/details/${banner.bookId}`" class="box">
+            <van-image :src="banner.picUrl" class="img">
               <template v-slot:loading>
                 <!-- <van-loading type="spinner" size="20" /> -->
                 <img src="@/assets/image/没有.png" />
               </template>
             </van-image>
-            <!-- <img :src="b.img || b.img2" class="img" v-lazy="b.img || b.img2" /> -->
           </router-link>
         </van-swipe-item>
       </van-swipe>
@@ -46,44 +44,85 @@
         <div class="close" @click.stop="close = false">X</div>
       </div>
     </div>
+
+    <!-- 书籍列表 -->
+    <ToDo v-if="bookList.length" :bookList="bookList"></ToDo>
+    <LoadingImg v-else></LoadingImg>
+    <div class="more" @click.stop="addMore">加载更多...</div>
   </div>
 </template>
+
 <script>
+import ToDo from "@/components/Multiplex/ToDo.vue";
+import LoadingImg from "@/components/Lading/LoadingImg.vue";
+
 export default {
-  components: {},
-  props: {
-    // bannerList: {
-    //   type: Object,
-    //   default: () => {
-    //     return null;
-    //   },
-    // },
+  components: {
+    ToDo,
+    LoadingImg
   },
+  props: {},
   data() {
     return {
       close: true,
-      bannerList: []
+      bannerList: [],
+      bookList: [],
+      page: 1
     };
   },
   mounted() { },
   created() {
-    this.getBanner();
+    this.getData();
   },
   methods: {
-    getBanner() {
-      this.axios.get("https://apis.netstart.cn/bcomic/Banner").then((data) => {
-        this.bannerList = data;
-        this.bannerList = this.bannerList.map((v) => {
-          if (v.jump_value.indexOf("?") != -1) {
-            let num = v.jump_value.match(/\/\d*/g);
-            // num = num.split("?")[0];
-            if (num.length > 2) {
-              v.num1 = num[2];
-              v.num2 = num[3];
-            }
-          }
-          return v;
+    async getData() {
+      await this.$axios.get("/api/banner/list", {
+        params: {
+          type: 2,
+          pageNo: 1,
+          pageSize: 3
+        }
+      })
+        .then((data) => {
+          this.bannerList = data.data.data.dataList;
         });
+      await this.$axios.get("/api/book/list", {
+        params: {
+          pageNo: this.page,
+          pageSize: 10
+        }
+      })
+        .then((data) => {
+          this.bookList = data.data.data.dataList;
+          if (this.bookList.length == 0) {
+            this.$toast("没有更多了~");
+            return;
+          }
+        });
+    },
+    addMore() {
+      if (this.page >= 3) {
+        this.$toast("没有更多了~");
+        return;
+      }
+      this.page++;
+      this.$axios.get("/api/book/list", {
+        params: {
+          pageNo: this.page,
+          pageSize: 10
+        }
+      })
+        .then((data) => {
+          let arr = data.data.data.dataList;
+          if (arr.length == 0) {
+            this.$toast("没有更多了~");
+            return;
+          }
+          this.bookList.push(...arr);
+        });
+      this.$toast.loading({
+        message: "加载中...",
+        forbidClick: true,
       });
     },
     onChange(index) {
@@ -167,6 +206,14 @@ export default {
         }
       }
     }
+  }
+
+  .more {
+    background-color: #fff;
+    text-align: center;
+    font-size: 14px;
+    color: gray;
+    height: 40px;
   }
 }
 

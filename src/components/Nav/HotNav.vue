@@ -4,12 +4,12 @@
 
     <!-- 轮播图 -->
     <div style="height: 1px"></div>
-    <div class="banner" v-if="slides" :style="{ '--background': 'url(' + imageUrl + ')' }">
+    <div class="banner" v-if="bannerList" :style="{ '--background': 'url(' + imageUrl + ')' }">
       <carousel-3d :autoplayTimeout="3000" :perspective="20" :animationSpeed="500" autoplay width="230" height="310"
         startIndex="3" @before-slide-change="onSlideChange" ref="carouser">
-        <slide v-for="(item, i) in slides" :index="i" :key="item.id" class="item3d">
-          <router-link :to="`/details/${item.numID}`">
-            <img :src="item.image_url + '@200w.jpg'" class="img" v-lazy="item.image_url + '@200w.jpg'" />
+        <slide v-for="(item, i) in bannerList" :index="i" :key="item.id" class="item3d">
+          <router-link :to="`/details/${item.bookId}`">
+            <img :src="item.picUrl" class="img" v-lazy="item.picUrl" />
           </router-link>
         </slide>
       </carousel-3d>
@@ -19,20 +19,19 @@
       <h3>今日热门速递</h3>
       <router-link tag="p" to="/all/1012/今日热门速递">查看全部>></router-link>
     </div>
-    <ul v-if="mainlist.length" class="hot_main">
-      <router-link tag="li" :to="`/details/${hot.item_id}`" v-for="hot in mainlist" :key="hot.item_id">
-        <van-image :src="hot.image + '@200w.jpg'" radius="5px">
+    <ul v-if="hotList.length" class="hot_main">
+      <router-link tag="li" :to="`/details/${hot.id}`" v-for="hot in hotList" :key="hot.id">
+        <van-image :src="hot.coverUrl" radius="5px">
           <template v-slot:loading>
             <van-loading type="spinner" size="20" />
           </template>
         </van-image>
-        <!-- <img :src="hot.image" v-lazy="hot.image" /> -->
-        <p>{{ hot.title }}</p>
-        <span>{{ hot.comic_info.decision }}</span>
+        <p>{{ hot.bookName }}</p>
+        <span>{{ "更新至" + hot.chapterCount + "话" }}</span>
       </router-link>
 
       <!-- 换一批 -->
-      <div class="iconfont icon-huanyipi" @click.stop="getDate(Math.floor(Math.random() * 8))">
+      <div class="iconfont icon-huanyipi" @click.stop="getData(Math.floor(Math.random() * 8))">
         &nbsp;&nbsp;换一批
       </div>
     </ul>
@@ -45,24 +44,23 @@
       <p></p>
     </div>
 
-    <ul v-if="newlist.length" class="new_main">
-      <router-link tag="li" :to="`/details/${newitem.item_id}`" v-for="(newitem, index) in newlist"
-        :key="newitem.item_id">
+    <ul v-if="newList.length" class="new_main">
+      <router-link tag="li" :to="`/details/${newitem.id}`" v-for="(newitem, index) in newList" :key="newitem.id">
         <div class="num">No.{{ index + 1 }}</div>
         <div class="img">
-          <van-image :src="newitem.image + '@400w.jpg'" radius="5px">
+          <van-image :src="newitem.coverUrl" radius="5px">
             <template v-slot:loading>
               <van-loading type="spinner" size="20" />
             </template>
           </van-image>
-          <!-- <img :src="newitem.image" v-lazy="newitem.image" /> -->
         </div>
-        <p>{{ newitem.title }}</p>
-        <span>{{
-          newitem.comic_info.decision
-          ? newitem.comic_info.decision
-          : "更新至" + newitem.comic_info.lastest_short_title + "话"
-        }}</span>
+        <p>{{ newitem.bookName }}</p>
+        <!-- <span>{{
+          newitem.summary
+          ? newitem.summary
+          : "更新至" + newitem.chapterCount + "话"
+        }}</span> -->
+        <span>{{ "更新至" + newitem.chapterCount + "话" }}</span>
       </router-link>
     </ul>
 
@@ -76,16 +74,15 @@
       <router-link tag="p" to="/all/1065/1V1超甜狗粮">查看全部>></router-link>
     </div>
 
-    <ul v-if="onelist" class="hot_main">
-      <router-link tag="li" :to="`/details/${one.item_id}`" v-for="one in onelist" :key="one.item_id">
-        <van-image :src="one.image + '@200w.jpg'" radius="5px">
+    <ul v-if="oneList" class="hot_main">
+      <router-link tag="li" :to="`/details/${one.id}`" v-for="one in oneList" :key="one.id">
+        <van-image :src="one.coverUrl" radius="5px">
           <template v-slot:loading>
             <van-loading type="spinner" size="20" />
           </template>
         </van-image>
-        <!-- <img :src="one.image" v-lazy="one.image" /> -->
-        <p>{{ one.title }}</p>
-        <span>{{ one.comic_info.decision }}</span>
+        <p>{{ one.bookName }}</p>
+        <span>{{ "更新至" + one.chapterCount + "话" }}</span>
       </router-link>
 
       <!-- 换一批 -->
@@ -109,7 +106,7 @@ export default {
     LoadingImg
   },
   props: {
-    slides: {
+    bannerList: {
       type: Array,
       default: () => {
         return null;
@@ -122,15 +119,18 @@ export default {
   },
   data() {
     return {
-      mainlist: [],
-      newlist: [],
-      onelist: [],
+      // 热门
+      hotList: [],
+      // 新作
+      newList: [],
+      // 1v1狗粮
+      oneList: [],
       imageUrl: this.$store.state.hotColor,
       name: null,
     };
   },
   created() {
-    this.getDate();
+    this.getData();
     this.getOne();
   },
   watch: {
@@ -143,35 +143,50 @@ export default {
 
   methods: {
     onSlideChange(e) {
-      let hotColor = this.slides[e].image_url;
+      let hotColor = this.bannerList[e].image_url;
       if (hotColor !== undefined) {
         hotColor = "https://images.weserv.nl/?url=" + hotColor;
         this.$store.commit("changeHotColor", hotColor);
       }
     },
-    async getDate(num = 1) {
+    async getData(num = 1) {
       console.log(window.localStorage.getItem('homeActive'));
-      await this.axios
-        .get(`GetHomeSecondaryComics?moduleId=1012&pageNum=${num}&pageSize=6`)
+      await this.$axios.get("/api/book/list", {
+        params: {
+          pageNo: num,
+          pageSize: 6
+        }
+      })
         .then((data) => {
-          this.mainlist = data.comics;
+          this.hotList = data.data.data.dataList;
         });
-      await this.axios
-        .get("GetHomeSecondaryComics?moduleId=1018&pageNum=1&pageSize=9")
+      await this.$axios.get("/api/book/list", {
+        params: {
+          pageNo: num,
+          pageSize: 9
+        }
+      })
         .then((data) => {
-          this.newlist = data.comics;
+          this.newList = data.data.data.dataList;
         });
     },
     async getOne(num = 1) {
-      await this.axios
-        .get(`GetHomeSecondaryComics?moduleId=1065&pageNum=${num}&pageSize=6`)
+      if (num === 0) {
+        num = 1;
+      }
+      await this.$axios.get("/api/book/list", {
+        params: {
+          pageNo: num,
+          pageSize: 6
+        }
+      })
         .then((data) => {
-          this.onelist = data.comics;
+          this.oneList = data.data.data.dataList;
         });
     },
     imgClick(obj) {
       console.log("img", obj);
-    },
+    }
   },
   destroyed() {
     this.$toast.loading({

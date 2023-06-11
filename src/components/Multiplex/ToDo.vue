@@ -2,21 +2,19 @@
   <div class="to_do">
     <!-- <h3>公共组件</h3> -->
 
-    <ul v-if="todoList.length" class="todo">
-      <router-link tag="li" :to="`/details/${item.parent_id}`" v-for="item in todoList" :key="item.parent_id">
-        <van-image :src="item.image + '@200w.jpg'" fit="cover" radius="5px">
+    <ul v-if="bookList.length" class="todo">
+      <router-link tag="li" :to="`/details/${book.id}`" v-for="book in bookList" :key="book.id">
+        <van-image :src="book.coverUrl" fit="cover" radius="5px">
           <template v-slot:loading>
-            <!-- <van-loading type="spinner" size="20" /> -->
             <img src="@/assets/image/加载失败.png" />
           </template>
         </van-image>
-        <!-- <img :src="item.image" /> -->
-        <p>{{ item.title }}</p>
+        <p>{{ book.bookName }}</p>
         <span>
           {{
-            item.comic_info.decision || item.comic_info.lastest_short_title
-            ? "更新至" + item.comic_info.lastest_short_title + "话"
-            : null || item.comic_info.main_style_name
+            book.summary || book.summary
+            ? "更新至" + book.chapterCount + "话"
+            : null || book.summary
           }}
         </span>
       </router-link>
@@ -32,7 +30,7 @@
 <script>
 export default {
   props: {
-    todoList: {
+    bookList: {
       type: Array,
       default: () => {
         return null;

@@ -43,7 +43,7 @@ const routes = [
     }
   },
   {
-    path: '/details/:detailsid',
+    path: '/details/:bookId',
     name: 'details',
     props: true,
     component: () => import('@/views/Details/DetailsView.vue'),
@@ -52,7 +52,7 @@ const routes = [
     }
   },
   {
-    path: '/content/:contentid/:detailsid',
+    path: '/content/:bookId/:chapterId',
     name: 'content',
     props: true,
     component: () => import('@/views/content/ContentView.vue'),

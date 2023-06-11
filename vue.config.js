@@ -1,24 +1,44 @@
-const {
-  defineConfig
-} = require('@vue/cli-service')
+// const {
+//   defineConfig
+// } = require('@vue/cli-service')
 
-module.exports = defineConfig({
-  transpileDependencies: true,
-  publicPath: "./",
+// module.exports = defineConfig({
+//   transpileDependencies: true,
+//   publicPath: "./",
+//   devServer: {
+//     host: "localhost",
+//     // host:"192.168.39.13",
+//     open: false,
+//   },
+//   configureWebpack: config => {
+//     // 为生产环境修改配置...
+//     if (process.env.NODE_ENV === 'production') {
+//       config.mode = 'production';
+//       // 打包文件大小配置
+//       config.performance = {
+//         maxEntrypointSize: 10000000,
+//         maxAssetSize: 30000000
+//       }
+//     }
+//   },
+// })
+
+
+
+module.exports = {
+  // 选项...
   devServer: {
-    host: "localhost",
-    // host:"192.168.39.13",
+    port: 899,
     open: false,
-  },
-  configureWebpack: config => {
-    // 为生产环境修改配置...
-    if (process.env.NODE_ENV === 'production') {
-      config.mode = 'production';
-      // 打包文件大小配置
-      config.performance = {
-        maxEntrypointSize: 10000000,
-        maxAssetSize: 30000000
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8089',
+        // ws: true,
+        // changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
       }
     }
-  },
-})
+  }
+}

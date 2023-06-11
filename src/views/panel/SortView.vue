@@ -1,29 +1,29 @@
 <template>
   <div class="sort">
-    <div class="box" v-if="sortList">
+    <div class="box" v-if="tagList">
       <!-- 类型 -->
       <ul class="top">
-        <li @click.stop="change1(s.id, s.name)" v-for="s in sortList.styles" :key="s.id" v-html="s.name" ref="li1"></li>
+        <li @click.stop="change1(s.id, s.name)" v-for="s in tagList.styles" :key="s.id" v-html="s.name" ref="li1"></li>
       </ul>
 
       <div class="main" ref="main">
         <!-- 国家 -->
         <ul class="box1">
-          <li @click.stop="change2(a.id, a.name)" v-for="a in sortList.areas" :key="a.id" v-html="a.name" ref="li2"></li>
+          <li @click.stop="change2(a.id, a.name)" v-for="a in tagList.areas" :key="a.id" v-html="a.name" ref="li2"></li>
         </ul>
         <!-- 完结 -->
         <ul class="box2">
-          <li @click.stop="change3(b.id, b.name)" v-for="b in sortList.status" :key="b.id" v-html="b.name" ref="li3"></li>
+          <li @click.stop="change3(b.id, b.name)" v-for="b in tagList.status" :key="b.id" v-html="b.name" ref="li3"></li>
         </ul>
         <!-- 免费 -->
         <ul class="box3">
-          <li @click.stop="change4(d.id, d.name)" v-for="d in sortList.prices" :key="d.id" v-html="d.name" ref="li4"></li>
+          <li @click.stop="change4(d.id, d.name)" v-for="d in tagList.prices" :key="d.id" v-html="d.name" ref="li4"></li>
         </ul>
         <!-- 人气 -->
         <ul class="box4">
           <van-icon name="arrow-down" v-if="!show" class="sx" @click.stop="sx">&nbsp;筛选</van-icon>
           <van-icon name="arrow-up" v-else class="sx" @click.stop="sx">&nbsp;筛选</van-icon>
-          <li @click.stop="change5(c.id, c.name)" v-for="c in sortList.orders" :key="c.id" v-html="c.name" ref="li5"></li>
+          <li @click.stop="change5(c.id, c.name)" v-for="c in tagList.orders" :key="c.id" v-html="c.name" ref="li5"></li>
         </ul>
       </div>
     </div>
@@ -52,7 +52,7 @@ export default {
       orderId: 0,
       isFreeId: -1,
       isFinishId: -1,
-      sortList: [],
+      tagList: [],
       show: false
     };
   },
@@ -64,22 +64,20 @@ export default {
   },
   methods: {
     async getSort() {
-      await this.axios
-        .get("AllLabel")
+      await this.$axios.get("/api/tag/list", {
+        params: {
+          pageNo: 1,
+          pageSize: 20
+        }
+      })
         .then((data) => {
-          // console.log("漫画分类===>", re);
-          let arr = data;
-          for (const i in arr) {
-            if (i != "orders") {
-              // console.log(arr[i]);
-              arr[i].unshift({ id: -1, name: "全部" });
-            }
-          }
-          this.sortList = arr;
+          this.tagList = data.data.data.dataList;
+          this.tagList.styles = [{ id: -1, name: "全部" }, { id: 1, name: "爱情" }, { id: 2, name: "玄幻" }];
+          this.tagList.areas = [{ id: -1, name: "全部" }, { id: 1, name: "中国" }, { id: 2, name: "韩国" }];
+          this.tagList.status = [{ id: -1, name: "全部" }, { id: 1, name: "连载中" }, { id: 2, name: "已完结" }];
+          this.tagList.prices = [{ id: -1, name: "全部" }, { id: 1, name: "免费" }, { id: 2, name: "限时免费" }];
+          this.tagList.orders = [{ id: 1, name: "最近更新" }, { id: 2, name: "最多收藏" }];
         })
-        .catch((error) => {
-          console.log("请求失败===>", error);
-        });
     },
     sx() {
       this.show = !this.show;

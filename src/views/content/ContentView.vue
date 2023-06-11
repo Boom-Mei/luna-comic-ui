@@ -1,13 +1,13 @@
 <template>
   <!-- <h3>漫画阅读</h3> -->
-  <!-- {{ contentid }} -->
+
   <div class="content">
     <!-- 漫画内容 -->
-    <ul v-if="mainList" class="over" @click.stop="showPopup" ref="ul">
+    <ul v-if="picList" class="over" @click.stop="showPopup" ref="ul">
       <!-- <p>往后看吧，前面没有了标签(～￣▽￣)～</p> -->
 
-      <li v-for="(img, index) in mainList" :key="index">
-        <img :src="img" v-lazy="img" v-if="mainList.length > 1" />
+      <li v-for="(img, index) in picList" :key="index">
+        <img :src="img.picUrl" v-lazy="img.picUrl" v-if="picList.length > 1" />
         <LoadingImg v-else></LoadingImg>
       </li>
     </ul>
@@ -19,8 +19,8 @@
         <span :style="[
           {
             color:
-              page == 0 || page == 1 ? (color = 'gray') : (color = '#fff'),
-          },
+              chapterOrder == 1 ? (color = 'gray') : (color = '#fff')
+          }
         ]" @click.stop="beforeChapter">上一话</span>
         <!-- 拖动条/进度条 -->
         <van-slider @change="onChange" @input="onInput" v-model="value" :min="0" :max="100" step="1" button-size="18px"
@@ -28,12 +28,15 @@
 
         <!-- 下一话 -->
         <span :style="[
+          // {
+          //   color:
+          //     chapterOrder == this.chapterList.length - 1
+          //       ? (color = 'gray')
+          //       : (color = '#fff'),
+          // },
           {
-            color:
-              page == this.chapter.length - 1
-                ? (color = 'gray')
-                : (color = '#fff'),
-          },
+            color: color = '#fff'
+          }
         ]" @click.stop="nextChapter">下一话</span>
       </div>
 
@@ -83,9 +86,9 @@
 
     <!-- 章节列表 -->
     <van-popup v-model="showChapter" position="bottom" :style="{ height: '60%' }" color="#1F243A">
-      <div class="box" v-if="todoList">
+      <div class="box" v-if="chapterList">
         <div class="title_top">
-          <h3>全部章节({{ todoList.total }})</h3>
+          <h3>全部章节({{ chapterList.total }})</h3>
           <span>批量优惠</span>
         </div>
         <div class="money" @click.stop="who = true">
@@ -96,59 +99,26 @@
           <van-icon name="question-o" size="16" color="#9EA2B5" />
         </div>
         <!-- 章节 -->
-        <ul class="chapter" v-if="chapter">
-          <li @click.stop="changeNum(cha.id)" v-for="cha in chapter" :key="cha.id"
-            :class="['zhangjie', { active_red: cha.id == contentid }]" :ref="cha.id == contentid ? 'activeRef' : ''"
-            :tabindex="{ '0': cha.id == contentid }">
-            <img :src="cha.cover" />
+        <ul class="chapter">
+          <li @click.stop="changeNum(chapter.id)" v-for="chapter in chapterList" :key="chapter.id"
+            :class="['zhangjie', { active_red: chapter.id == chapterId }]"
+            :ref="chapter.id == chapterId ? 'activeRef' : ''" :tabindex="{ '0': chapter.id == chapterId }">
+            <img :src="chapter.coverUrl" />
             <div class="name_text">
-              <p :class="{ active_true: cha.id == contentid }">
-                {{ cha.title }}
-                <van-icon v-show="cha.id == contentid" name="location" color="#3AA0EA" />
+              <p :class="{ active_true: chapter.id == chapterId }">
+                {{ chapter.chapterName }}
+                <van-icon v-show="chapter.id == chapterId" name="location" color="#3AA0EA" />
               </p>
               <span>
-                {{ cha.pub_time.substr(5, 5) }} &nbsp;
+                {{ chapter.updatedAt.substr(5, 5) }} &nbsp;
                 <van-icon name="comment" color="#42454C" />
-                {{ cha.comments }} &nbsp;
+                {{ chapter.commentCount }} &nbsp;
                 <van-icon name="good-job" color="#42454C" />
-                {{ cha.like_count }}
+                {{ chapter.like }}
               </span>
             </div>
-            <van-icon v-show="cha.change" name="location" class="xz" color="skyblue" size="15" />
+            <van-icon v-show="chapter.change" name="location" class="xz" color="skyblue" size="15" />
           </li>
-          <!-- <router-link
-            tag="li"
-            :to="`/content/${cha.id}/${detailsid}`"
-            v-for="cha in chapter"
-            :key="cha.id"
-            class="zhangjie"
-          >
-            <img :src="cha.cover" />
-            <div class="name_text">
-              <p :class="{ active_true: cha.id == contentid }">
-                {{ cha.ord }} &nbsp; {{ cha.title }}&nbsp;&nbsp;&nbsp;
-                <van-icon
-                  v-show="cha.id == contentid"
-                  name="location"
-                  color="#3AA0EA"
-                />
-              </p>
-              <span>
-                {{ cha.pub_time.substr(5, 5) }} &nbsp;
-                <van-icon name="comment" color="#42454C" />
-                {{ cha.comments }} &nbsp;
-                <van-icon name="good-job" color="#42454C" />
-                {{ cha.like_count }}
-              </span>
-            </div>
-            <van-icon
-              v-show="cha.change"
-              name="location"
-              class="xz"
-              color="skyblue"
-              size="15"
-            />
-          </router-link> -->
         </ul>
 
         <!-- 顺序 -->
@@ -219,26 +189,25 @@ export default {
     LoadingImg
   },
   props: {
-    contentid: {
-      // 章节id
-      type: String,
-      default: ""
-    },
-    detailsid: {
+    bookId: {
       // 漫画id
       type: String,
       default: "31351"
+    },
+    chapterId: {
+      // 章节id
+      type: String,
+      default: ""
     }
   },
   data() {
     return {
       // 存放图片
-      mainList: [],
+      picList: [],
       // 存放漫画
       comicsList: [],
-      todoList: [],
-      // 章节
-      chapter: [],
+      // 章节列表
+      chapterList: [],
       // 显示章节
       showChapter: false,
       // 显示 top 菜单
@@ -261,17 +230,17 @@ export default {
           { name: "分享海报", icon: "poster" },
           { name: "二维码", icon: "qrcode" },
           { name: "小程序码", icon: "weapp-qrcode" },
-        ],
+        ]
       ],
       value: 0,
       // 疑问
       who: false,
       // 显示追漫
       flag: false,
-      // 漫画名字
+      // 章节名称
       titleName: "",
-      // 第几话
-      page: 0,
+      // 章节序
+      chapterOrder: 0,
       // 滚动距离
       cm: 0,
       // 顺序
@@ -283,25 +252,17 @@ export default {
     };
   },
   beforeRouteEnter(to, from, next) {
-    console.log(from, "next");
     let name = from.name;
-    // if (name == "details") {
-    //   console.log("-------详情------------");
-    //   next();
-    //   return;
-    // }
     localStorage.setItem("afterName", name);
     next();
   },
   created() {
-    this.getDate();
-    this.changeColor();
+    this.getData();
     // this.$nextTick(() => {
     //   console.log(this.$refs.activeRef,'activeRef');
     // });
   },
   mounted() {
-    this.getDate();
     window.addEventListener("scroll", this.scrollShow, true);
     // document.addEventListener("scroll", this.scrollShow, true);
   },
@@ -310,76 +271,71 @@ export default {
     // document.addEventListener("scroll", this.scrollShow, false);
   },
   watch: {
-    $route() {
-      this.$router.go(0);
-    }
+    // $route() {
+    //   this.$router.go(0);
+    // }
+
+    // 监听页面路由有没有变化，有变化就执行后面的方法
+    // '$route.query.monthPlanId': 'initData'
+    // 解决跳转相同路由时页面不刷新问题，不调用created和mounted
+    '$route': 'getData'
   },
   methods: {
-    async getDate() {
-      await this.axios
-        .get("GetImageIndex?epId=" + this.contentid)
+    async getData() {
+      // 章节图片列表
+      await this.$axios.get("/api/picture/list", {
+        params: {
+          chapterId: this.chapterId,
+          pageNo: 1,
+          pageSize: 30
+        }
+      })
         .then((data) => {
-          let arr = data.images.map((v) => {
-            let host = "https://manga.hdslb.com";
-            v.path =
-              this.hua == "超清"
-                ? "%22" + host + v.path + "@1000w.webp%22"
-                : this.hua == "高清"
-                  ? (v.path = "%22" + host + v.path + "@1000w.jpg%22")
-                  : (v.path = "%22" + host + v.path + "@660w.webp%22");
-            // v.path = "%22" + host + v.path + "@1000w.webp%22";
-            // v.path = "%22" + host + v.path + "@1000w.jpg%22";
-            // v.path = "%22" + host + v.path + "@660w.webp%22";
-            return v.path;
-          });
-
-          // console.log("阅读漫画===>", arr);
-          this.mainList = new Array(arr);
-          // console.log(this.mainList);
-          this.axios
-            .get("ImageToken?urls=[" + this.mainList + "]")
-            .then((data) => {
-              // console.log("漫画内容===>", item);
-              this.mainList = data.map((v) => {
-                v.main = v.url + "?token=" + v.token;
-                return v.main;
-              });
-              // console.log(this.mainList);
-            })
-            .catch((error) => {
-              console.log("请求失败===>", error);
-            });
+          this.picList = data.data.data.dataList;
         });
-      this.axios.get("ComicDetail?comicId=" + this.detailsid)
-      .then((data) => {
-        let obj = data;
-        this.todoList = data;
-        this.chapter = _.reverse(
-          data.ep_list.map((v) => {
+      // 章节详情
+      await this.$axios.get("/api/chapter/detail", {
+        params: {
+          id: this.chapterId
+        }
+      })
+        .then((data) => {
+          let chapterDetail = data.data.data;
+          this.titleName = chapterDetail.chapterName;
+          this.chapterOrder = chapterDetail.chapterOrder;
+          // 添加历史记录
+          let obj = data;
+          obj.bookId = chapterDetail.bookId;
+          obj.chapterID = chapterDetail.id;
+          obj.chapterNum = chapterDetail.chapterOrder;
+          this.$store.commit("addHistory", data);
+        });
+      // 章节列表
+      this.$axios.get("/api/chapter/list", {
+        params: {
+          bookId: this.bookId,
+          pageNo: 1,
+          pageSize: 50
+        }
+      })
+        .then((data) => {
+          this.chapterList = data.data.data.dataList;
+          // this.chapterList = _.reverse(
+          this.chapterList = this.chapterList.map((v) => {
+            // todo: 章节没有做付费控制
             v.change = false;
+            v.commentCount = 101;
+            v.like = 365;
+            v.updatedAt = "2023-06-11 12:21:35"
             return v;
-          })
-        );
-
-        this.chapter.forEach((v) => {
-          if (this.contentid == v.id) {
-            this.titleName = v.title;
-            this.page = v.ord;
-            // 添加章节id
-            obj.chapterID = this.contentid;
-            // 添加第几话
-            obj.chapterNum = v.short_title;
-            // 添加历史记录
-            this.$store.commit("addHistory", data);
-          }
-        });
-      });
+          });
+        })
+      this.changeColor();
     },
     onClose() {
       this.show = false;
     },
     showPopup() {
-      // this.show = true;
       this.show = !this.show;
     },
     // 返回
@@ -400,27 +356,23 @@ export default {
       this.showChapter = !this.showChapter;
     },
     // 选择章节
-    // todo: 选择章节直接空白页了
     changeNum(id) {
       this.$router.replace({
         name: "content",
         params: {
-          contentid: id,
-          detailsid: this.detailsid,
-        },
+          bookId: this.bookId.toString(),
+          chapterId: id.toString()
+        }
       });
+      this.showChapter = false;
+      this.show = false;
     },
     // 详情
     goTo() {
-      // let name = localStorage.getItem("afterName");
-      // if (name == "home") {
-      //   this.$router.push({ name: "details" });
-      //   return;
-      // }
       this.$router.replace({
         name: "details",
         params: {
-          detailsid: this.detailsid,
+          bookId: this.bookId.toString(),
         }
       });
     },
@@ -432,7 +384,6 @@ export default {
         let scrollY = document.documentElement.scrollTop;
         let move = (scrollY * 100) / this.$refs.ul.offsetHeight;
         // let heightMove = document.documentElement.clientHeight;
-
         if (scrollY == 0) {
           this.value = 0;
         } else {
@@ -440,7 +391,6 @@ export default {
           this.value = move;
         }
       }
-
       // console.log("可视化窗口高度==>", heightMove);
       // console.log("卷去高度==>", scrollY, e.target);
       // console.log("可视化窗口高度+卷去高度==>", heightMove + scrollY);
@@ -474,22 +424,22 @@ export default {
       }
       // 当高亮时点击删除漫画
       if (this.flag) {
-        this.$store.commit("removeBook", this.detailsid);
+        this.$store.commit("removeBook", this.bookId);
       } else {
         // 当未高亮时点击添加漫画
-        this.$store.commit("addBook", this.todoList);
+        this.$store.commit("addBook", this.chapterList);
       }
       this.flag = !this.flag;
     },
     // 修改追漫高亮
     changeColor() {
       this.$store.state.bookList.forEach((item) => {
-        if (item.id == this.detailsid) {
+        if (item.id == this.bookId) {
           this.flag = true;
         }
       });
     },
-    // 提示登录
+    // 取消登录
     cancel() {
     },
     confirm() {
@@ -499,68 +449,68 @@ export default {
     changOrder() {
       this.orders = !this.orders;
       if (!this.orders) {
-        this.chapter = _.reverse(this.chapter);
+        this.chapterList = _.reverse(this.chapterList);
       } else {
-        this.chapter = _.reverse(this.chapter);
+        this.chapterList = _.reverse(this.chapterList);
       }
     },
     // 上一话
     beforeChapter() {
-      this.chapter.forEach((item, index) => {
-        // 获取数组被选中的index下标
-        if (this.contentid == item.id) {
-          if (index == 0) {
-            return;
-          }
-          // 上一章漫画的id
-          let num = this.chapter[index - 1].id;
+      if (this.chapterOrder == 1 || this.chapterList.length == 0) {
+        this.$toast("已经是第一章哦~");
+        return;
+      }
+      this.chapterList.forEach((item) => {
+        // 上一章节
+        if (item.chapterOrder == this.chapterOrder - 1) {
           // 跳转到上一章节
           this.$router.replace({
             name: "content",
             params: {
-              contentid: num,
-              detailsid: this.detailsid,
+              bookId: this.bookId.toString(),
+              chapterId: item.id.toString()
             }
           });
         }
       });
+      this.show = false;
     },
     // 下一话
     nextChapter() {
-      this.chapter.forEach((item, index) => {
-        // 获取数组被选中的index下标
-        if (this.contentid == item.id) {
-          if (index == this.chapter.length - 1) {
-            return;
-          }
-          // 下一章漫画的id
-          let num = String(this.chapter[index + 1].id);
-          // console.log(num, "num", this.chapter.length, "length");
+      // todo: 下一话如何跳转
+      if (this.chapterList.length == 0) {
+        this.$toast("已经是最后一章哦~");
+        return;
+      }
+      this.chapterList.forEach((item) => {
+        // 下一章节
+        if (item.chapterOrder == this.chapterOrder + 1) {
           // 跳转到下一章节
           this.$router.replace({
             name: "content",
             params: {
-              contentid: num,
-              detailsid: this.detailsid,
+              bookId: this.bookId.toString(),
+              chapterId: item.id.toString()
             }
           });
         }
       });
+      this.show = false;
     },
     // 超清
     changeChao() {
       this.hua = "超清";
-      this.getDate();
+      this.getData();
     },
     // 高清
     changeGao() {
       this.hua = "高清";
-      this.getDate();
+      this.getData();
     },
     // 流畅
     changeLiu() {
       this.hua = "流畅";
-      this.getDate();
+      this.getData();
     }
   }
 };
