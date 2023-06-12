@@ -103,20 +103,22 @@
 
     <!-- 开始阅读 -->
     <div class="read">
-      <!-- 底部目录 -->
-      <div class="left" @click.stop="showPopup">
-        <van-icon name="description" color="gray" size="25" />
-        <span>目录</span>
-      </div>
+      <div class="read-main">
+        <!-- 底部目录 -->
+        <div class="left" @click.stop="showPopup">
+          <van-icon name="description" color="gray" size="25" />
+          <span>目录</span>
+        </div>
 
-      <ul class="top_all" v-if="bookDetail">
-        <router-link tag="li" :to="`/content/${bookId}/${chapter.id}`" v-for="chapter in chapterList" :key="chapter.id">
-          {{ chapter.chapterOrder }}
+        <ul class="top_all" v-if="bookDetail">
+          <router-link tag="li" :to="`/content/${bookId}/${chapter.id}`" v-for="chapter in chapterList" :key="chapter.id">
+            {{ chapter.chapterOrder }}
+          </router-link>
+        </ul>
+        <router-link :to="`/content/${bookId}/${gainId}`" v-if="gainId">
+          <div class="right">{{ text }}</div>
         </router-link>
-      </ul>
-      <router-link :to="`/content/${bookId}/${gainId}`" v-if="gainId">
-        <div class="right">{{ text }}</div>
-      </router-link>
+      </div>
     </div>
 
     <!-- 目录列表 -->
@@ -625,59 +627,65 @@ export default {
     }
   }
 
-  /* 开始阅读 */
+  // 开始阅读
+  // 在fixed外层包裹一个元素，解决阻挡下层内容问题
   .read {
     height: 50px;
-    width: 100vw;
-    z-index: 8;
-    position: fixed;
-    bottom: 0;
-    background-color: #fff;
-    box-shadow: 0px 0px 5px 1px grey;
-    display: flex;
-    justify-content: space-between;
 
-    .left {
-      width: 50px;
+    .read-main {
+      height: 50px;
+      width: 100vw;
+      z-index: 8;
+      position: fixed;
+      bottom: 0;
+      // border-top: 1px solid #ccc;
+      background-color: #fff;
+      box-shadow: 0px 0px 5px 1px grey;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 1px 0px 5px 2px #f5f6f8;
+      justify-content: space-between;
 
-      span {
-        font-size: 12px;
+      .left {
+        width: 50px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 1px 0px 5px 2px #f5f6f8;
+
+        span {
+          font-size: 12px;
+        }
       }
-    }
 
-    .top_all {
-      height: 100%;
-      flex: 1;
-      display: flex;
-      align-items: center;
-      overflow-x: auto;
-      margin-left: 3px;
+      .top_all {
+        height: 100%;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        overflow-x: auto;
+        margin-left: 3px;
 
-      li {
-        width: 80px;
-        height: 30px;
-        line-height: 30px;
-        font-size: 12px;
+        li {
+          width: 80px;
+          height: 30px;
+          line-height: 30px;
+          font-size: 12px;
+          text-align: center;
+          background-color: #f5f6f8;
+          margin: 0 10px;
+          padding: 0 20px;
+        }
+      }
+
+      .right {
+        width: 100px !important;
+        height: 100%;
+        color: white;
+        background-color: #31a9fe;
         text-align: center;
-        background-color: #f5f6f8;
-        margin: 0 10px;
-        padding: 0 20px;
+        line-height: 50px;
+        font-size: 13px;
       }
-    }
-
-    .right {
-      width: 100px !important;
-      height: 100%;
-      color: white;
-      background-color: #31a9fe;
-      text-align: center;
-      line-height: 50px;
-      font-size: 13px;
     }
   }
 

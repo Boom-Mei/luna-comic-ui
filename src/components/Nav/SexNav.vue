@@ -4,7 +4,7 @@
 
     <div class="tablist" v-if="tabList">
       <van-tabs v-model="active" sticky animated swipeable background="#fff" color="black" @click="onClick">
-        <van-tab :name="tab.id" :key="tab.id" :title="tab.name" v-for="tab in tabList" sticky>
+        <van-tab :name="tab.id" :key="tab.id" :title="tab.tagName" v-for="tab in tabList" sticky>
           <!-- 男生 -->
           <div v-show="sex == '男生'" class="boy">
             <van-cell v-for="book in bookList" :key="book.id">
