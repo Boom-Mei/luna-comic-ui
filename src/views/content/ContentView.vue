@@ -13,7 +13,8 @@
     </ul>
 
     <!-- bottom 菜单 -->
-    <van-popup v-model="show" position="bottom" :style="{ height: '15%' }" :overlay="false" class="btnBottom">
+    <van-popup v-model="show" position="bottom" :style="{ height: '15%' }" :overlay="false" class="btnBottom"
+      :lock-scroll="false">
       <div class="c_top">
         <!-- 上一话 -->
         <span :style="[
@@ -70,7 +71,8 @@
     </van-popup>
 
     <!-- top 菜单 -->
-    <van-popup v-model="show" position="top" :style="{ height: '7%' }" :overlay="false" class="btnTop">
+    <van-popup v-model="show" position="top" :style="{ height: '7%' }" :overlay="false" class="btnTop"
+      :lock-scroll="false">
       <!-- 返回 -->
       <van-icon name="arrow-left" color="#fff" @click.stop="onClickLeft" />
 
@@ -85,7 +87,7 @@
     </van-popup>
 
     <!-- 章节列表 -->
-    <van-popup v-model="showChapter" position="bottom" :style="{ height: '60%' }" color="#1F243A">
+    <van-popup v-model="showChapter" position="bottom" :style="{ height: '60%' }" color="#1F243A" :lock-scroll="false">
       <div class="box" v-if="chapterList">
         <div class="title_top">
           <h3>全部章节({{ chapterList.total }})</h3>

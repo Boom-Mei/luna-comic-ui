@@ -12,9 +12,9 @@
       </van-nav-bar>
     </van-sticky>
 
-    <!-- banner图 -->
-    <div class="banner">
-      <van-image :src="bookDetail.bannerUrl">
+    <!-- 封面图 -->
+    <div class="cover">
+      <van-image :src="bookDetail.coverUrl">
         <template v-slot:loading>
           <!-- <van-loading type="spinner" size="20" /> -->
           <img src="@/assets/image/加载失败.png" style="width: 375px,height: 200px" />
@@ -122,7 +122,7 @@
     </div>
 
     <!-- 目录列表 -->
-    <van-popup v-model="show" position="bottom" :style="{ height: '60%' }">
+    <van-popup v-model="show" position="bottom" :style="{ height: '60%' }" :lock-scroll="false">
       <div class="box" v-if="bookDetail">
         <div class="title_top">
           <h3>全部章节({{ bookDetail.chapterCount }})</h3>
@@ -484,7 +484,7 @@ export default {
     }
   }
 
-  .banner {
+  .cover {
     position: relative;
 
     img {
