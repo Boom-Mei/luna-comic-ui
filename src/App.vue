@@ -15,11 +15,15 @@
     <!-- exclude相当于include的反义词 -->
     <!-- 除了home组件和about组件别的都缓存  <keep-alive exclude="home,about" > -->
     <div class="app" v-else>
-      <keep-alive include="home,my,bookshelf,details,sort" v-if="showNav">
-        <router-view v-if="showNav">
+      <!-- <keep-alive include="home,my,bookshelf,details,sort" v-if="showNav"> -->
+      <keep-alive v-if="showNav">
+        <router-view v-if="$route.meta.keepAlive && showNav">
           <slot></slot>
         </router-view>
       </keep-alive>
+      <router-view v-if="!$route.meta.keepAlive && showNav">
+        <slot></slot>
+      </router-view>
       <tab-nav v-if="!$route.meta.hideNav && showNav"></tab-nav>
       <div style="height: 50px" v-if="!$route.meta.hideNav"></div>
     </div>
