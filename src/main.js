@@ -23,6 +23,8 @@ Vue.prototype.$axios = axios
 
 Vue.use(Vant).use(Carousel3d).use(Lazyload, {
   lazyComponent: true,
+  loading: require('@/assets/image/玩命加载中.png'),
+  error: require('@/assets/image/没有.png')
 });
 Vue.config.productionTip = false
 
