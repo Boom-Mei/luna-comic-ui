@@ -26,7 +26,7 @@ export default {
       date: "",
       show: false,
       keyword: "",
-      componentName: "SearchHot",
+      componentName: "SearchHot"
     };
   },
   created() {
@@ -75,8 +75,8 @@ export default {
     //   if (historyWord) {
     //     this.componentName = historyWord;
     //   }
-    // },
-  },
+    // }
+  }
 };
 </script>
 

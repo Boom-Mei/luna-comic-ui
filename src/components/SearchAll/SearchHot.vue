@@ -2,13 +2,13 @@
   <div class="search-hot">
     <!-- 热门搜索 -->
     <h3>热门搜索</h3>
-    <ul v-if="hotWords" class="hot-word">
-      <router-link tag="li" :to="`/details/${hot.season_id}`" v-for="(hot, index) in hotWords" :key="hot.season_id">
+    <ul v-if="hotSearchBookList" class="hot-word">
+      <router-link tag="li" :to="`/details/${hot.id}`" v-for="(hot, index) in hotSearchBookList" :key="hot.id">
         <div class="num">{{ index + 1 }}</div>
-        <img :src="hot.horizontal_cover + '@200w.jpg'" />
+        <img :src="hot.coverUrl" />
         <div class="text">
-          <p>{{ hot.title }}</p>
-          <span>{{ hot.styles[0] }}</span>
+          <p>{{ hot.bookName }}</p>
+          <span>{{ hot.tag }}</span>
         </div>
       </router-link>
     </ul>
@@ -16,11 +16,11 @@
     <!-- 历史记录 -->
     <h3 v-if="historyArr">搜索历史</h3>
     <ol class="history" v-if="historyArr">
-      <li v-for="h in historyArr" :key="h" @click.stop="$emit('search', h)">
+      <li v-for="history in historyArr" :key="history" @click.stop="$emit('search', history)">
         <p>
-          {{ h }}
+          {{ history }}
         </p>
-        <div class="close" @click.stop="delHistory(h)">
+        <div class="close" @click.stop="delHistory(history)">
           <van-icon name="delete-o" color="#ccc" />
         </div>
       </li>
@@ -32,8 +32,8 @@
 export default {
   data() {
     return {
-      hotWords: [],
-      historyArr: [],
+      hotSearchBookList: [],
+      historyArr: []
     };
   },
   created() {
@@ -42,10 +42,20 @@ export default {
   methods: {
     // 热门搜索
     async getHotWord() {
-      await this.axios.get("SearchRecommend?num=8").then((data) => {
-        this.hotWords = data.slice(0, 6);
-        this.getHistory();
-      });
+      await this.$axios.get("/api/book/list", {
+        params: {
+          top: 1,
+          pageNo: 1,
+          pageSize: 6
+        }
+      })
+        .then((data) => {
+          // data是请求返回
+          // data.data是请求返回的数据信息
+          this.hotSearchBookList = data.data.data.dataList;
+          this.hotSearchBookList = this.hotSearchBookList.slice(0, 6);
+          this.getHistory();
+        });
     },
     // 获取本地储存的数据
     getHistory() {
@@ -64,8 +74,8 @@ export default {
       this.historyArr = historyWords;
       // 在把已经处理好的数据重新储存在本地服务器
       localStorage.setItem("searchHistory", JSON.stringify(historyWords));
-    },
-  },
+    }
+  }
 };
 </script>
 

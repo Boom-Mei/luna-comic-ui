@@ -2,10 +2,10 @@
   <div class="search-suggest">
     <!-- <h3>搜索建议</h3> -->
 
-    <ul v-if="suggest" class="sug">
-      <li v-for="(s, index) in suggest" :key="index" @click.stop="change">
+    <ul v-if="suggestList" class="sug">
+      <li v-for="(suggest, index) in suggestList" :key="index" @click.stop="change">
         <van-icon name="search" color="#ccc" size="18px" />
-        <p v-html="$options.filters.highLight(s, keyword)"></p>
+        <p v-html="$options.filters.highLight(suggest.suggest, keyword)"></p>
       </li>
     </ul>
   </div>
@@ -19,12 +19,12 @@ export default {
   props: {
     keyword: {
       type: String,
-      default: "",
-    },
+      default: ""
+    }
   },
   data() {
     return {
-      suggest: []
+      suggestList: []
     };
   },
   created() {
@@ -32,10 +32,16 @@ export default {
   },
   methods: {
     async getSuggest() {
-      await this.axios.get("SearchSug?term=" + this.keyword).then((data) => {
-        // console.log(re);
-        this.suggest = data;
-      });
+      await this.$axios.get("/api/book/search/suggest/list", {
+        params: {
+          keyword: this.keyword,
+          pageNo: 1,
+          pageSize: 20
+        }
+      })
+        .then((data) => {
+          this.suggestList = data.data.data.dataList;
+        })
     },
     change(event) {
       this.$emit("search", event.target.innerText);
@@ -53,7 +59,7 @@ export default {
   filters: {
     highLight(value, keyword) {
       return value.replace(keyword, `<i style="color:skyblue">${keyword}</i>`);
-    },
+    }
   }
 };
 </script>

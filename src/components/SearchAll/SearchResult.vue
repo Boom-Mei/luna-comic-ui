@@ -1,6 +1,7 @@
 <template>
   <div class="serach-result">
     <!-- <h3>搜索结果</h3> -->
+
     <CartoonList :searchResult="searchResult" :keyword="keyword" @changeValue1="changeValue1"
       @changeValue2="changeValue2"></CartoonList>
 
@@ -17,8 +18,8 @@
 </template>
 
 <script>
-import CartoonList from "../Multiplex/CartoonList.vue";
 import _ from "lodash";
+import CartoonList from "../Multiplex/CartoonList.vue";
 
 export default {
   components: {
@@ -27,16 +28,19 @@ export default {
   props: {
     keyword: {
       type: String,
-      default: "",
-    },
+      default: ""
+    }
   },
   data() {
     return {
       searchResult: [],
-      page: 2,
+      page: 1,
       showLoading: false,
       flag: true,
+      // 对应CartoonList的两个值
+      // 地区
       value1: 0,
+      // 排序方式
       value2: -1
     };
   },
@@ -59,14 +63,17 @@ export default {
     }
   },
   methods: {
-    async getResult(offset = 10) {
-      await this.axios
-        .get(
-          `Search?styleId=-1&areaId=${this.value2}&isFinish=-1&order=${this.value2}&pageNum=1&pageSize=${offset}&isFree=-1&keyWord=
-          ${this.keyword}`
-        )
+    async getResult() {
+      await this.$axios.get("/api/book/list", {
+        params: {
+          bookName: this.keyword,
+          sortType: this.value2,
+          pageNo: this.page,
+          pageSize: 10
+        }
+      })
         .then((data) => {
-          this.searchResult = data.list;
+          this.searchResult = data.data.data.dataList;
         })
         .catch((error) => {
           this.showLoading = false;
@@ -88,14 +95,34 @@ export default {
             this.loadMore();
             this.showLoading = true;
           }
-          console.log("触底了！！");
+          // console.log("触底了！！");
         }
       }
     }, 300),
     loadMore() {
       this.page++;
-      let offset = 10 * (this.page - 1);
-      this.getResult(offset);
+      this.$axios.get("/api/book/list", {
+        params: {
+          bookName: this.keyword,
+          sortType: this.value2,
+          pageNo: this.page,
+          pageSize: 10
+        }
+      })
+        .then((data) => {
+          let arr = data.data.data.dataList;
+          if (arr.length == 0) {
+            this.showLoading = false;
+            this.flag = false;
+            return;
+          }
+          this.searchResult.push(...arr);
+        })
+        .catch((error) => {
+          this.showLoading = false;
+          this.flag = false;
+          console.log(error);
+        });
     },
     // 把搜索的关键字存储在本地服务器
     setHistory() {
@@ -121,7 +148,7 @@ export default {
     },
     changeValue2(value) {
       this.value2 = value;
-    },
+    }
   }
 };
 </script>
