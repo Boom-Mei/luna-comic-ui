@@ -61,7 +61,7 @@
 
     <div class="main">
       <!-- 评论内容 -->
-      <CommentMain :detailsid="detailsid" :review="review"></CommentMain>
+      <CommentMain :bookId="bookId" :review="review"></CommentMain>
     </div>
   </div>
 </template>
@@ -77,7 +77,7 @@ export default {
     PostComment
   },
   props: {
-    detailsid: {
+    bookId: {
       type: String,
       default: null
     },
@@ -95,7 +95,7 @@ export default {
   },
   data() {
     return {
-      todoList: [],
+      commentList: [],
       num: this.value,
       // 评分
       // score: 7,
@@ -118,10 +118,16 @@ export default {
   },
   methods: {
     async getData() {
-      await this.axios
-        .get(`ListReviews?sort=${this.sort}&comicId=${this.detailsid}`)
+      await this.$axios.get("/api/comment/list", {
+        params: {
+          bookId: this.bookId,
+          type: 1,
+          pageNo: 1,
+          pageSize: 20
+        }
+      })
         .then((data) => {
-          this.todoList = data.reviews;
+          this.commentList = data.data.data.dataList;
         });
     },
     postText(obj) {

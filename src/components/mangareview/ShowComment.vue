@@ -3,49 +3,43 @@
     <h3>讨论区({{ num }})</h3>
     <h6>热门评论</h6>
     <!-- 评论内容 -->
-    <ul v-if="todoList" class="manga">
-      <li v-for="user in todoList" :key="user.rpid">
+    <ul v-if="commentList" class="manga">
+      <li v-for="comment in commentList" :key="comment.id">
         <!-- 头像 -->
-        <img :src="user.member.avatar + '@100w.jpg'" />
+        <img :src="comment.userAvatar" />
 
         <div class="right_text">
           <!-- 名字 -->
           <div class="name">
-            <p>{{ user.member.uname }}</p>
-            <span>{{
-              new Date(user.member.vip.vipDueDate).getFullYear() +
-              "-" +
-              (new Date(user.member.vip.vipDueDate).getMonth() + 1) +
-              "-" +
-              new Date(user.member.vip.vipDueDate).getDate()
-            }}</span>
+            <p>{{ comment.userName }}</p>
+            <span>{{ comment.userVioDueDate }}</span>
           </div>
           <!-- 评论内容 -->
           <div class="content">
-            <p :class="{ 'expand': expand }">{{ user.content.message }}</p>
+            <p :class="{ 'expand': expand }">{{ comment.content }}</p>
             <!-- 图标 -->
             <div class="tu">
               <span>
                 <van-icon name="good-job-o" size="18" />&nbsp;
-                <p>{{ user.like }}</p>
+                <p>{{ comment.like }}</p>
               </span>
               <span>
                 <van-icon name="comment-o" size="18" />&nbsp;
-                <p>{{ user.rcount }}</p>
+                <p>{{ comment.rcount }}</p>
               </span>
               <span><van-icon name="share-o" size="18" /></span>
             </div>
           </div>
           <!-- 回复内容 -->
           <ul class="reply">
-            <li v-for="man in user.replies" :key="man.rpid">
+            <li v-for="reply in comment.replies" :key="reply.id">
               <p>
-                <span>{{ man.member.uname }}</span>{{ man.content.message }}
+                <span>{{ reply.userName }}&nbsp;</span>{{ reply.content }}
                 <img src="http://i0.hdslb.com/bfs/emote/6ea59c827c414b4a2955fe79e0f6fd3dcd515e24.png" alt="" />
               </p>
             </li>
             <li>
-              <span>共{{ user.rcount }}条回复<van-icon name="arrow" /></span>
+              <span>共{{ comment.rcount }}条回复<van-icon name="arrow" /></span>
             </li>
           </ul>
         </div>
@@ -69,9 +63,7 @@ export default {
   data() {
     return {
       // 评论列表
-      todoList: [],
-      // 分页大小
-      page: 10,
+      commentList: [],
       // 排序 1-默认，2-最新，3-热门
       mode: 3,
       // 展开
@@ -83,12 +75,29 @@ export default {
   },
   methods: {
     async getData() {
-      await this.axios
-        .get(
-          `ReplyMain?oid=${this.bookId}&mode=${this.mode}&ps=${this.page}`
-        )
+      await await this.$axios.get("/api/comment/list", {
+        params: {
+          bookId: this.bookId,
+          type: 1,
+          pageNo: 1,
+          pageSize: 20
+        }
+      })
         .then((data) => {
-          this.todoList = data.replies;
+          // data是请求返回
+          // data.data是请求返回的数据信息
+          this.commentList = data.data.data.dataList;
+          this.commentList = this.commentList.map((v) => {
+            v.userAvatar = "http://i0.hdslb.com/bfs/emote/6ea59c827c414b4a2955fe79e0f6fd3dcd515e24.png";
+            v.userVioDueDate = "2023-06-14";
+            v.rcount = 10;
+            v.replies = [{
+              id: 1,
+              userName: "回复人",
+              content: "这是一个回复"
+            }];
+            return v;
+          });
         });
     }
   }

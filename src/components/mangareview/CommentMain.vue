@@ -77,7 +77,7 @@ export default {
           // data.data是请求返回的数据信息
           this.commentList = data.data.data.dataList;
           this.commentList = this.commentList.map((v) => {
-            v.face = "";
+            v.face = "http://i0.hdslb.com/bfs/emote/6ea59c827c414b4a2955fe79e0f6fd3dcd515e24.png";
             v.score = 9.2;
             v.flag = false;
             return v;

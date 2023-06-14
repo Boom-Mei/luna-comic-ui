@@ -4,7 +4,7 @@
 
     <h3>发表评论</h3>
     <div class="box">
-      <img :src="$store.state.imgSrc + '@200w.jpg'" alt="" />
+      <img :src="$store.state.imgSrc" alt="" />
       <p>{{ name }}</p>
       <!-- 星星 -->
       <van-rate v-model="value" :size="25" color="#ffd21e" void-icon="star" void-color="#ccc" />
@@ -55,8 +55,12 @@ export default {
   watch: {},
   methods: {
     postcom() {
-      if (this.message.length < 10) {
-        this.$toast("写满10个字就才可以发布哦~");
+      // if (this.message.length < 10) {
+      //   this.$toast("写满10个字就才可以发布哦~");
+      //   return;
+      // }
+      if (this.message.length == 0) {
+        this.$toast("请留下你的评论~");
         return;
       }
       let obj = {
