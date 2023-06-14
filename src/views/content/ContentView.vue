@@ -274,7 +274,11 @@ export default {
   },
   watch: {
     $route() {
-      this.$router.go(0);
+      // 刷新页面
+      // this.$router.go(0);
+
+      // 不刷新页面，重新请求数据
+      this.getData();
     }
 
     // 监听页面路由有没有变化，有变化就执行后面的方法
@@ -331,6 +335,9 @@ export default {
             v.updatedAt = "2023-06-11 12:21:35"
             return v;
           });
+          if (!this.orders) {
+            this.chapterList = _.reverse(this.chapterList);
+          }
         })
       this.changeColor();
     },
@@ -356,6 +363,12 @@ export default {
     // 显示章节按钮
     changeChapter() {
       this.showChapter = !this.showChapter;
+      // 异步，保证能够获取到元素
+      this.$nextTick(function () {
+        document.getElementsByClassName("zhangjie active_red")[0].scrollIntoView({
+          block: "center"
+        });
+      })
     },
     // 选择章节
     changeNum(id) {
@@ -455,6 +468,9 @@ export default {
       } else {
         this.chapterList = _.reverse(this.chapterList);
       }
+      this.$nextTick(function () {
+        document.getElementsByClassName("box")[0].scrollIntoView();
+      })
     },
     // 上一话
     beforeChapter() {

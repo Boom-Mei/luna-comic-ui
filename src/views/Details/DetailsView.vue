@@ -441,11 +441,15 @@ export default {
       } else {
         this.chapterList = _.reverse(this.chapterList);
       }
+      this.$nextTick(function () {
+        document.getElementsByClassName("box")[0].scrollIntoView();
+      })
     },
-    // 点击目录按钮
+    // 选择目中中的某个章节
     moveIn(value) {
       value.change = true;
       // this.gainId = value.id;
+      this.show = false;
     },
     // 提示登录
     cancel() {
