@@ -273,14 +273,14 @@ export default {
     // document.addEventListener("scroll", this.scrollShow, false);
   },
   watch: {
-    // $route() {
-    //   this.$router.go(0);
-    // }
+    $route() {
+      this.$router.go(0);
+    }
 
     // 监听页面路由有没有变化，有变化就执行后面的方法
     // '$route.query.monthPlanId': 'initData'
     // 解决跳转相同路由时页面不刷新问题，不调用created和mounted
-    '$route': 'getData'
+    // '$route': 'getData'
   },
   methods: {
     async getData() {
@@ -317,7 +317,7 @@ export default {
         params: {
           bookId: this.bookId,
           pageNo: 1,
-          pageSize: 50
+          pageSize: 200
         }
       })
         .then((data) => {

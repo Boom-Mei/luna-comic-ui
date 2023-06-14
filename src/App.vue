@@ -64,6 +64,8 @@ export default {
             this.timeNum = 5;
           }
         }, 1000);
+      } else {
+        this.showNav = true;
       }
     }
   }

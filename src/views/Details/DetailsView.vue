@@ -139,7 +139,7 @@
         <ul class="chapter" v-if="chapterList">
           <router-link tag="li" :to="`/content/${bookId}/${chapter.id}`" v-for="chapter in chapterList" :key="chapter.id"
             @click.stop="moveIn(chapter)">
-            <img :src="chapter.coverUrl" />
+            <img :src="bookDetail.coverUrl" />
             <div class="name_text">
               <p :class="{ active_true: chapter.change }">
                 {{ chapter.chapterName }}
@@ -220,7 +220,7 @@ export default {
   data() {
     return {
       // 漫画内容
-      bookDetail: [],
+      bookDetail: {},
       // 章节
       chapterList: [],
       // 漫画评论
@@ -305,7 +305,7 @@ export default {
     "$store.state.historyList"() {
       this.check();
     },
-    '$route': ['getData', 'check', 'changeColor']
+    // '$route': ['getData', 'check', 'changeColor']
   },
   methods: {
     async getData() {
@@ -335,7 +335,7 @@ export default {
         params: {
           bookId: this.bookId,
           pageNo: 1,
-          pageSize: 50
+          pageSize: 200
         }
       })
         .then((data) => {

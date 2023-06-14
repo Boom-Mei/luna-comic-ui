@@ -32,11 +32,11 @@ export default {
     this.getData();
   },
   watch: {
-    // $route() {
-    //   this.$router.go(0);
-    // }
+    $route() {
+      this.$router.go(0);
+    }
 
-    '$route': 'getData'
+    // '$route': 'getData'
   },
   mounted() { },
   methods: {
