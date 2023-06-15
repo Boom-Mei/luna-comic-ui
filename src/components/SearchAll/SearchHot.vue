@@ -42,7 +42,7 @@ export default {
   methods: {
     // 热门搜索
     async getHotWord() {
-      await this.$axios.get("/api/book/list", {
+      await this.$axios.get("/book/list", {
         params: {
           top: 1,
           pageNo: 1,

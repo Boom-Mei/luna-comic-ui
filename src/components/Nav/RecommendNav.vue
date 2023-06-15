@@ -76,7 +76,7 @@ export default {
   },
   methods: {
     async getData() {
-      await this.$axios.get("/api/banner/list", {
+      await this.$axios.get("/banner/list", {
         params: {
           type: 2,
           pageNo: 1,
@@ -86,7 +86,7 @@ export default {
         .then((data) => {
           this.bannerList = data.data.data.dataList;
         });
-      await this.$axios.get("/api/book/list", {
+      await this.$axios.get("/book/list", {
         params: {
           pageNo: this.page,
           pageSize: 10
@@ -106,7 +106,7 @@ export default {
         return;
       }
       this.page++;
-      this.$axios.get("/api/book/list", {
+      this.$axios.get("/book/list", {
         params: {
           pageNo: this.page,
           pageSize: 10

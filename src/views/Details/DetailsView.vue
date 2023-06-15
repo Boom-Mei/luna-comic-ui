@@ -309,7 +309,7 @@ export default {
   },
   methods: {
     async getData() {
-      await this.$axios.get("/api/book/detail", {
+      await this.$axios.get("/book/detail", {
         params: {
           id: this.bookId
         }
@@ -331,7 +331,7 @@ export default {
           this.watch = 10.1 + "万";
           this.check();
         });
-      await this.$axios.get("/api/chapter/list", {
+      await this.$axios.get("/chapter/list", {
         params: {
           bookId: this.bookId,
           pageNo: 1,
@@ -358,7 +358,7 @@ export default {
           this.gainId = this.chapterList[0].id;
         });
       // todo: 这个到底要不要在这里请求
-      await this.$axios.get("/api/comment/list", {
+      await this.$axios.get("/comment/list", {
         params: {
           bookId: this.bookId,
           type: 1,

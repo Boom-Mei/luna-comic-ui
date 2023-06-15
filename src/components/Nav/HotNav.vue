@@ -151,7 +151,7 @@ export default {
     },
     async getData(num = 1) {
       console.log(window.localStorage.getItem('homeActive'));
-      await this.$axios.get("/api/book/list", {
+      await this.$axios.get("/book/list", {
         params: {
           pageNo: num,
           pageSize: 6
@@ -160,7 +160,7 @@ export default {
         .then((data) => {
           this.hotList = data.data.data.dataList;
         });
-      await this.$axios.get("/api/book/list", {
+      await this.$axios.get("/book/list", {
         params: {
           pageNo: num,
           pageSize: 9
@@ -174,7 +174,7 @@ export default {
       if (num === 0) {
         num = 1;
       }
-      await this.$axios.get("/api/book/list", {
+      await this.$axios.get("/book/list", {
         params: {
           pageNo: num,
           pageSize: 6

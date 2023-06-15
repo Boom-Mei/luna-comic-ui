@@ -289,7 +289,7 @@ export default {
   methods: {
     async getData() {
       // 章节图片列表
-      await this.$axios.get("/api/picture/list", {
+      await this.$axios.get("/picture/list", {
         params: {
           chapterId: this.chapterId,
           pageNo: 1,
@@ -300,7 +300,7 @@ export default {
           this.picList = data.data.data.dataList;
         });
       // 章节详情
-      await this.$axios.get("/api/chapter/detail", {
+      await this.$axios.get("/chapter/detail", {
         params: {
           id: this.chapterId
         }
@@ -317,7 +317,7 @@ export default {
           this.$store.commit("addHistory", data);
         });
       // 章节列表
-      this.$axios.get("/api/chapter/list", {
+      this.$axios.get("/chapter/list", {
         params: {
           bookId: this.bookId,
           pageNo: 1,

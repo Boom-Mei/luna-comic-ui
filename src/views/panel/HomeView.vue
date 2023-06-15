@@ -105,14 +105,14 @@ export default {
   },
   methods: {
     async getData() {
-      // this.$axios.post("/api/banner/list", {
+      // this.$axios.post("/banner/list", {
       //   type: 1,
       //   pageNo: 1,
       //   pageSize: 3
       // })
 
       // this.$axios({
-      //   url: "/api/banner/list",
+      //   url: "/banner/list",
       //   method: "get",
       //   params: {
       //     type: 1,
@@ -121,7 +121,7 @@ export default {
       //   }
       // })
       
-      await this.$axios.get("/api/banner/list", {
+      await this.$axios.get("/banner/list", {
         params: {
           type: 1,
           pageNo: 1,

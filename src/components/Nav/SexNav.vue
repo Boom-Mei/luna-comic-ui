@@ -85,7 +85,7 @@ export default {
   methods: {
     async getData() {
       let type = this.sex == "男生" ? 1 : 2;
-      await this.$axios.get("/api/tag/list", {
+      await this.$axios.get("/tag/list", {
         params: {
           type: type,
           pageNo: 1,
@@ -99,7 +99,7 @@ export default {
           let tag = this.tabList.filter((tab) => {
             return tab.tagName == this.tagName;
           });
-          this.$axios.get("/api/book/list", {
+          this.$axios.get("/book/list", {
             params: {
               tag: tag.length > 0 ? tag[0].id : 1,
               pageNo: 1,

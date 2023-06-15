@@ -71,7 +71,7 @@ export default {
     // 获取数据
     getData() {
       // todo: 更改这个请求
-      this.$axios.get("/api/book/list", {
+      this.$axios.get("/book/list", {
         params: {
           pageNo: this.currentPage,
           pageSize: 10

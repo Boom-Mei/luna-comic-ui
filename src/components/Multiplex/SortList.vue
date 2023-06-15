@@ -113,7 +113,7 @@ export default {
   },
   methods: {
     getData() {
-      this.$axios.get("/api/book/list", {
+      this.$axios.get("/book/list", {
         params: {
           pageNo: 1,
           pageSize: 9
@@ -133,7 +133,7 @@ export default {
         return;
       }
       this.page++;
-      this.$axios.get("/api/book/list", {
+      this.$axios.get("/book/list", {
         params: {
           pageNo: this.page,
           pageSize: 9

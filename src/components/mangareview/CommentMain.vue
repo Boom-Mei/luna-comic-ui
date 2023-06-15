@@ -64,7 +64,7 @@ export default {
   computed: {},
   methods: {
     async getData() {
-      await this.$axios.get("/api/comment/list", {
+      await this.$axios.get("/comment/list", {
         params: {
           bookId: this.bookId,
           type: 1,

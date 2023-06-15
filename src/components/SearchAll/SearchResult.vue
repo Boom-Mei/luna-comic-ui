@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     async getResult() {
-      await this.$axios.get("/api/book/list", {
+      await this.$axios.get("/book/list", {
         params: {
           bookName: this.keyword,
           sortType: this.value2,
@@ -101,7 +101,7 @@ export default {
     }, 300),
     loadMore() {
       this.page++;
-      this.$axios.get("/api/book/list", {
+      this.$axios.get("/book/list", {
         params: {
           bookName: this.keyword,
           sortType: this.value2,

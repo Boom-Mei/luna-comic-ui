@@ -42,7 +42,7 @@ export default {
   methods: {
     getData() {
       let num = Math.floor(Math.random() * 8);
-      this.$axios.get("/api/book/list", {
+      this.$axios.get("/book/list", {
         params: {
           pageNo: num == 0 ? 1 : num,
           pageSize: 10

@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     async getSuggest() {
-      await this.$axios.get("/api/book/search/suggest/list", {
+      await this.$axios.get("/book/search/suggest/list", {
         params: {
           keyword: this.keyword,
           pageNo: 1,

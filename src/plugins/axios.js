@@ -73,7 +73,7 @@
 // axios文档：https://www.axios-http.cn/docs/post_example
 import axios from 'axios'
 
-axios.defaults.baseURL = ''
+axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 

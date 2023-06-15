@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     async getSort() {
-      await this.$axios.get("/api/tag/list", {
+      await this.$axios.get("/tag/list", {
         params: {
           pageNo: 1,
           pageSize: 20
