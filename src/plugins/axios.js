@@ -73,6 +73,8 @@
 // axios文档：https://www.axios-http.cn/docs/post_example
 import axios from 'axios'
 
+// 如果是绝对地址的话，是浏览器直接发起的请求
+// 如果是相对地址的话，就是nodejs服务器发起的请求，dev环境就可以走到proxy
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'

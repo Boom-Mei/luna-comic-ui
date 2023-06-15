@@ -4,7 +4,9 @@ const {
 
 module.exports = defineConfig({
   transpileDependencies: true,
-  publicPath: "./",
+  // 刷新后出现：We're sorry but comics doesn't work properly without JavaScript enabled. Please enable it to continue.
+  // 注释掉这一行，使用默认的"/"
+  // publicPath: "./",
   devServer: {
     host: "localhost",
     // host:"192.168.39.13",
