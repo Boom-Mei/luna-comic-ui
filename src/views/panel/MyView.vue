@@ -137,25 +137,27 @@ export default {
   },
   methods: {
     async getUser() {
-      await this.axios.get("UCenterConf").then((data) => {
-        // console.log(data);
-        this.activityArr = data.confs.slice(0, 4);
-        this.arr = data.confs.slice(4, data.confs.length);
-        this.arr = this.arr.map((v) => {
-          if (v.title == "帮助中心") {
-            v.jump_url =
-              "https://www.bilibili.com/blackboard/topic/activity-help.html";
-          } else if (v.title == "青少年模式") {
-            (v.text1 =
-              "在青少年模式中，我们精选了一批教育类、知识类内容呈现在首页，且部分功能无法使用，每日晚22时至次日早6时期间无法使用哔哩哔哩漫画。\n开启青少年模式后，将自动开启时间锁，时间锁为40分钟。单日使用时长超过触发时间，需输入密码才能继续使用\n开启青少年模式，需先设置独立密码，如忘记密码可通过申诉重置密码\n青少年模式是哔哩哔哩漫画为促进青少年健康成长做出的一次尝试，我们优先针对核心场景进行了优化，也将继续致力于优化更多场景。"),
-              (v.text2 =
-                "在青少年模式中，我们精选了一批教育类、知识类内容呈现在首页，且部分功能无法使用，每日晚22时至次日早6时期间无法使用哔哩哔哩漫画。\n青少年模式是哔哩哔哩漫画为促进青少年健康成长做出的一次尝试，我们优先针对核心场景进行了优化，也将继续致力于优化更多场景。"),
-              (v.text3 =
-                "若您需要重置青少年模式的密码，请您发送邮件至help@bilibili.com，主题命名为【您的哔哩哔哩漫画账号UID+漫画青少年模式密码重置】。\n邮件中请您上传本人手持身份证和写有“仅用于哔哩哔哩漫画青少年模式密码重置”纸张的照片，要求本人、身份证和纸张在同一照片中，且字迹清晰可辨。\n您的资料仅用于密码重置申诉，哔哩哔哩漫画不会泄露您的个人信息，并会尽快为您处理。");
-          }
-          return v;
+      await this.$axios.get("https://apis.netstart.cn/bcomic/UCenterConf")
+        .then((data) => {
+          console.log(data);
+          let resData = data.data.data;
+          this.activityArr = resData.confs.slice(0, 4);
+          this.arr = resData.confs.slice(4, resData.confs.length);
+          this.arr = this.arr.map((v) => {
+            if (v.title == "帮助中心") {
+              v.jump_url =
+                "https://www.bilibili.com/blackboard/topic/activity-help.html";
+            } else if (v.title == "青少年模式") {
+              (v.text1 =
+                "在青少年模式中，我们精选了一批教育类、知识类内容呈现在首页，且部分功能无法使用，每日晚22时至次日早6时期间无法使用哔哩哔哩漫画。\n开启青少年模式后，将自动开启时间锁，时间锁为40分钟。单日使用时长超过触发时间，需输入密码才能继续使用\n开启青少年模式，需先设置独立密码，如忘记密码可通过申诉重置密码\n青少年模式是哔哩哔哩漫画为促进青少年健康成长做出的一次尝试，我们优先针对核心场景进行了优化，也将继续致力于优化更多场景。"),
+                (v.text2 =
+                  "在青少年模式中，我们精选了一批教育类、知识类内容呈现在首页，且部分功能无法使用，每日晚22时至次日早6时期间无法使用哔哩哔哩漫画。\n青少年模式是哔哩哔哩漫画为促进青少年健康成长做出的一次尝试，我们优先针对核心场景进行了优化，也将继续致力于优化更多场景。"),
+                (v.text3 =
+                  "若您需要重置青少年模式的密码，请您发送邮件至help@bilibili.com，主题命名为【您的哔哩哔哩漫画账号UID+漫画青少年模式密码重置】。\n邮件中请您上传本人手持身份证和写有“仅用于哔哩哔哩漫画青少年模式密码重置”纸张的照片，要求本人、身份证和纸张在同一照片中，且字迹清晰可辨。\n您的资料仅用于密码重置申诉，哔哩哔哩漫画不会泄露您的个人信息，并会尽快为您处理。");
+            }
+            return v;
+          });
         });
-      });
     },
     getIn() {
       console.log(this.$store.state.Login);
