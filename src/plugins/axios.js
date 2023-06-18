@@ -91,6 +91,7 @@ axios.interceptors.request.use(function (config) {
 // Add a response interceptor
 axios.interceptors.response.use(function (response) {
   // Do something with response data
+  const data = response.data
   const status = response.data.code || 200
   // const statusWhiteList = website.statusWhiteList || []
   const message = response.data.msg || '未知错误'
@@ -110,6 +111,11 @@ axios.interceptors.response.use(function (response) {
   // 如果请求为非200否者默认统一处理
   if (status !== 200) {
     return Promise.reject(message)
+  }
+  // error ret: 24
+  if (data.ret != 814) {
+    // reject里面就是catch中的error对象
+    return Promise.reject(data)
   }
   return response;
 }, function (error) {

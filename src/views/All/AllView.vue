@@ -79,6 +79,11 @@ export default {
       })
         .then((data) => {
           this.allList = data.data.data.dataList;
+        })
+        .catch(() => {
+          this.$router.replace({
+            name: "404"
+          });
         });
     },
     // 返回

@@ -1,7 +1,7 @@
 <template>
   <!-- <h3>漫画阅读</h3> -->
 
-  <div class="content">
+  <div class="content" v-if="chapterDetail">
     <!-- 漫画内容 -->
     <ul v-if="picList" class="over" @click.stop="showPopup" ref="ul">
       <!-- <p>往后看吧，前面没有了标签(～￣▽￣)～</p> -->
@@ -19,24 +19,17 @@
         <!-- 上一话 -->
         <span :style="[
           {
-            color:
-              chapterOrder == 1 ? (color = 'gray') : (color = '#fff')
+            color: this.chapterDetail.preview == 0 ? (color = 'gray') : (color = '#fff')
           }
         ]" @click.stop="beforeChapter">上一话</span>
         <!-- 拖动条/进度条 -->
-        <van-slider @change="onChange" @input="onInput" v-model="value" :min="0" :max="100" step="1" button-size="18px"
-          bar-height="4px" active-color="skyblue" inactive-color="gray" />
+        <van-slider @change="onChange" @input="onInput" v-model="progressBar" :min="0" :max="100" step="1"
+          button-size="18px" bar-height="4px" active-color="skyblue" inactive-color="gray" />
 
         <!-- 下一话 -->
         <span :style="[
-          // {
-          //   color:
-          //     chapterOrder == this.chapterList.length - 1
-          //       ? (color = 'gray')
-          //       : (color = '#fff'),
-          // },
           {
-            color: color = '#fff'
+            color: this.chapterDetail.next == 0 ? (color = 'gray') : (color = '#fff'),
           }
         ]" @click.stop="nextChapter">下一话</span>
       </div>
@@ -77,7 +70,7 @@
       <van-icon name="arrow-left" color="#fff" @click.stop="onClickLeft" />
 
       <!-- 标题 -->
-      <p>&nbsp; {{ titleName }}</p>
+      <p>&nbsp; {{ chapterDetail.chapterName }}</p>
 
       <!-- 详情 -->
       <div v-if="goIn == 'home'" class="detail" @click.stop="goTo">详情</div>
@@ -204,6 +197,8 @@ export default {
   },
   data() {
     return {
+      // 章节详情
+      chapterDetail: null,
       // 存放图片
       picList: [],
       // 存放漫画
@@ -234,15 +229,12 @@ export default {
           { name: "小程序码", icon: "weapp-qrcode" },
         ]
       ],
-      value: 0,
+      // 进度条
+      progressBar: 0,
       // 疑问
       who: false,
       // 显示追漫
       flag: false,
-      // 章节名称
-      titleName: "",
-      // 章节序
-      chapterOrder: 0,
       // 滚动距离
       cm: 0,
       // 顺序
@@ -263,6 +255,7 @@ export default {
     // this.$nextTick(() => {
     //   console.log(this.$refs.activeRef,'activeRef');
     // });
+    this.changeColor();
   },
   mounted() {
     window.addEventListener("scroll", this.scrollShow, true);
@@ -273,50 +266,64 @@ export default {
     // document.addEventListener("scroll", this.scrollShow, false);
   },
   watch: {
+    // 监听页面路由有没有变化，有变化就执行后面的方法
+    // '$route.query.monthPlanId': 'initData'
+    // 解决跳转相同路由时页面不刷新问题，不调用created和mounted
     $route() {
       // 刷新页面
       // this.$router.go(0);
 
       // 不刷新页面，重新请求数据
+      // 这里要保留升降序的按钮状态，所以不刷新页面
       this.getData();
     }
-
-    // 监听页面路由有没有变化，有变化就执行后面的方法
-    // '$route.query.monthPlanId': 'initData'
-    // 解决跳转相同路由时页面不刷新问题，不调用created和mounted
-    // '$route': 'getData'
   },
   methods: {
     async getData() {
-      // 章节图片列表
-      await this.$axios.get("/picture/list", {
-        params: {
-          chapterId: this.chapterId,
-          pageNo: 1,
-          pageSize: 30
-        }
-      })
-        .then((data) => {
-          this.picList = data.data.data.dataList;
-        });
       // 章节详情
+      await this.getChapterDetail();
+      if (this.chapterDetail == null) {
+        return;
+      }
+      // 章节图片列表
+      this.getChapterPic();
+      // 章节列表，todo: 这个放这里合适吗？
+      this.getChapterList();
+    },
+    async getChapterDetail() {
       await this.$axios.get("/chapter/detail", {
         params: {
           id: this.chapterId
         }
       })
         .then((data) => {
-          let chapterDetail = data.data.data;
-          this.titleName = chapterDetail.chapterName;
-          this.chapterOrder = chapterDetail.chapterOrder;
+          this.chapterDetail = data.data.data;
           // 添加历史记录
           let obj = data;
-          obj.bookId = chapterDetail.bookId;
-          obj.chapterID = chapterDetail.id;
-          obj.chapterNum = chapterDetail.chapterOrder;
+          obj.bookId = this.chapterDetail.bookId;
+          obj.chapterID = this.chapterDetail.id;
+          obj.chapterNum = this.chapterDetail.chapterOrder;
           this.$store.commit("addHistory", data);
+        })
+        .catch(() => {
+          this.$router.replace({
+            name: "404"
+          });
         });
-      // 章节列表
+    },
+    getChapterPic() {
+      this.$axios.get("/picture/list", {
+        params: {
+          chapterId: this.chapterId,
+          pageNo: 1,
+          pageSize: 200
+        }
+      })
+        .then((data) => {
+          this.picList = data.data.data.dataList;
+        });
+    },
+    getChapterList() {
       this.$axios.get("/chapter/list", {
         params: {
           bookId: this.bookId,
@@ -338,8 +345,7 @@ export default {
           if (!this.orders) {
             this.chapterList = _.reverse(this.chapterList);
           }
-        })
-      this.changeColor();
+        });
     },
     onClose() {
       this.show = false;
@@ -400,10 +406,10 @@ export default {
         let move = (scrollY * 100) / this.$refs.ul.offsetHeight;
         // let heightMove = document.documentElement.clientHeight;
         if (scrollY == 0) {
-          this.value = 0;
+          this.progressBar = 0;
         } else {
           // this.value = Math.ceil(move);
-          this.value = move;
+          this.progressBar = move;
         }
       }
       // console.log("可视化窗口高度==>", heightMove);
@@ -420,8 +426,10 @@ export default {
       this.showShare = true;
       this.show = false;
     },
-    onChange(value) {
-      console.log("拖动滑块结束后~~", value);
+    // onChange(value) {
+    //   console.log("拖动滑块结束后~~", value);
+    // },
+    onChange() {
     },
     onInput(e) {
       let ulHeight = this.$refs.ul.offsetHeight;
@@ -474,13 +482,13 @@ export default {
     },
     // 上一话
     beforeChapter() {
-      if (this.chapterOrder == 1 || this.chapterList.length == 0) {
+      if (this.chapterDetail.preview == 0) {
         this.$toast("已经是第一章哦~");
         return;
       }
       this.chapterList.forEach((item) => {
         // 上一章节
-        if (item.chapterOrder == this.chapterOrder - 1) {
+        if (item.chapterOrder == this.chapterDetail.chapterOrder - 1) {
           // 跳转到上一章节
           this.$router.replace({
             name: "content",
@@ -496,13 +504,13 @@ export default {
     // 下一话
     nextChapter() {
       // todo: 下一话如何跳转
-      if (this.chapterList.length == 0) {
+      if (this.chapterDetail.next == 0) {
         this.$toast("已经是最后一章哦~");
         return;
       }
       this.chapterList.forEach((item) => {
         // 下一章节
-        if (item.chapterOrder == this.chapterOrder + 1) {
+        if (item.chapterOrder == this.chapterDetail.chapterOrder + 1) {
           // 跳转到下一章节
           this.$router.replace({
             name: "content",

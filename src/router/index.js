@@ -74,6 +74,19 @@ const routes = [
       hideNav: true,
       scrollToTop: true
     }
+  },
+  {
+    path: '/404',
+    name: '404',
+    component: () => import('../views/other/NotFoundComponent.vue'),
+    meta: {
+      hideNav: true,
+      scrollToTop: true
+    }
+  },
+  {
+    path: '*',
+    redirect: '/404'
   }
 ]
 

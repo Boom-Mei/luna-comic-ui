@@ -1,5 +1,5 @@
 <template>
-  <div class="details" v-if="bookDetail.coverUrl">
+  <div class="details" v-if="bookDetail">
     <!-- <h3>内容详情</h3> -->
 
     <!-- 头部 -->
@@ -28,15 +28,15 @@
 
     <!-- 漫画名 -->
     <h3>
-      {{ name }}
+      {{ bookDetail.bookName }}
     </h3>
 
     <!-- 评分星星 -->
     <div class="star">
-      <span> {{ score }}</span>
-      <van-rate v-model="value" allow-half color="#ffd21e" void-icon="star" :size="15" readonly />
+      <span> {{ bookDetail.score }}</span>
+      <van-rate v-model="bookDetail.star" allow-half color="#ffd21e" void-icon="star" :size="15" readonly />
       <em>阅读数：</em>
-      <span>{{ watch }}</span>
+      <span>{{ bookDetail.watch }}</span>
     </div>
 
     <!-- 连载中 -->
@@ -139,7 +139,7 @@
         <ul class="chapter" v-if="chapterList">
           <router-link tag="li" :to="`/content/${bookId}/${chapter.id}`" v-for="chapter in chapterList" :key="chapter.id"
             @click.stop="moveIn(chapter)">
-            <img :src="bookDetail.coverUrl" />
+            <img :src="chapter.coverUrl" />
             <div class="name_text">
               <p :class="{ active_true: chapter.change }">
                 {{ chapter.chapterName }}
@@ -180,7 +180,8 @@
     <!-- 漫画点评 -->
     <van-popup v-model="showDian" closeable position="bottom" :style="{ height: '100%' }" title="漫画点评"
       close-icon-position="top-left">
-      <ReviewsD :detailsid="bookId" :value="value" :score="score" :name="name"></ReviewsD>
+      <ReviewsD :detailsid="bookId" :value="bookDetail.star" :score="bookDetail.score" :name="bookDetail.bookName">
+      </ReviewsD>
     </van-popup>
 
     <!-- 讨论区列表 -->
@@ -220,20 +221,15 @@ export default {
   data() {
     return {
       // 漫画内容
-      bookDetail: {},
+      bookDetail: null,
       // 章节
       chapterList: [],
       // 漫画评论
       commentList: [],
       // 是否已追漫标志，true-已追
       flag: false,
+      // 简介
       dow: true,
-      // 星星个数
-      value: 3,
-      // 阅读数
-      watch: 35,
-      // 评分
-      score: 7,
       // 评论个数
       num: 0,
       // 换一换
@@ -244,13 +240,12 @@ export default {
       showComment: false,
       // 顺序
       orders: true,
+      // 疑问提示
       who: false,
       // 提示登录
       showhint: false,
       // 分享
       showShare: false,
-      // 漫画名字
-      name: "",
       options: [
         [
           { name: "微信", icon: "wechat" },
@@ -265,10 +260,10 @@ export default {
           { name: "小程序码", icon: "weapp-qrcode" },
         ]
       ],
+      // 点评
       showDian: false,
       // 默认开始阅读第一章
       gainId: 0,
-      jumpName: "home",
       text: "开始阅读"
     };
   },
@@ -300,8 +295,8 @@ export default {
     // "$store.state.bookList"() {},
     // "$store.state.Login"(){
     // }
-    flag() {
-    },
+    // flag() {
+    // },
     "$store.state.historyList"() {
       this.check();
     },
@@ -309,6 +304,17 @@ export default {
   },
   methods: {
     async getData() {
+      // 等待await后的表达式执行完成后再执行后面的操作
+      // 等待的途中会跳出async函数，继续执行函数外的代码，并不会阻塞async函数后面的方法执行
+      await this.getBookDetail();
+      if (this.bookDetail == null) {
+        return;
+      }
+      this.getChapterList();
+      // todo: 这个到底要不要在这里请求
+      this.getCommentList();
+    },
+    async getBookDetail() {
       await this.$axios.get("/book/detail", {
         params: {
           id: this.bookId
@@ -321,16 +327,22 @@ export default {
           this.$store.commit("addImgSrc", this.bookDetail.coverUrl);
           // 添加历史记录
           // this.$store.commit("addHistory", this.bookDetail);
-          this.name = this.bookDetail.bookName;
           // this.score = this.bookDetail.score.toFixed(1);
           // this.value = this.score / 2;
           // this.watch = (this.bookDetail.watch / 10000).toFixed(1) + "万";
           //   Number.toFixed(1)  四舍五入后，保留小数点后一位
-          this.score = 9.0;
-          this.value = this.score / 2;
-          this.watch = 10.1 + "万";
+          this.bookDetail.score = 9.0;
+          this.bookDetail.star = this.bookDetail.score / 2;
+          this.bookDetail.watch = 10.1 + "万";
           this.check();
+        })
+        .catch(() => {
+          this.$router.replace({
+            name: "404"
+          });
         });
+    },
+    async getChapterList() {
       await this.$axios.get("/chapter/list", {
         params: {
           bookId: this.bookId,
@@ -357,7 +369,8 @@ export default {
           // 默认第一章
           this.gainId = this.chapterList[0].id;
         });
-      // todo: 这个到底要不要在这里请求
+    },
+    async getCommentList() {
       await this.$axios.get("/comment/list", {
         params: {
           bookId: this.bookId,
