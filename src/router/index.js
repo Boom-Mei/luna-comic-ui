@@ -10,6 +10,7 @@ const routes = [
     name: 'home',
     component: HomeView,
     meta: {
+      title: '首页',
       keepAlive: true
     }
   },
@@ -18,6 +19,7 @@ const routes = [
     name: 'my',
     component: () => import('../views/panel/MyView.vue'),
     meta: {
+      title: '我的',
       keepAlive: true
     }
   },
@@ -26,6 +28,7 @@ const routes = [
     name: 'bookshelf',
     component: () => import('../views/panel/BookshelfView.vue'),
     meta: {
+      title: '书架',
       keepAlive: true
     }
   },
@@ -34,6 +37,7 @@ const routes = [
     name: 'sort',
     component: () => import('../views/panel/SortView.vue'),
     meta: {
+      title: '分类',
       keepAlive: true
     }
   },
@@ -42,6 +46,7 @@ const routes = [
     name: 'search',
     component: () => import('../views/search/SearchView.vue'),
     meta: {
+      title: '搜索',
       hideNav: true
     }
   },
@@ -51,6 +56,7 @@ const routes = [
     props: true,
     component: () => import('@/views/All/AllView.vue'),
     meta: {
+      title: '全部漫画',
       hideNav: true
     }
   },
@@ -60,6 +66,7 @@ const routes = [
     props: true,
     component: () => import('@/views/Details/DetailsView.vue'),
     meta: {
+      title: '漫画详情',
       keepAlive: true,
       hideNav: true,
       scrollToTop: true
@@ -71,6 +78,7 @@ const routes = [
     props: true,
     component: () => import('@/views/content/ContentView.vue'),
     meta: {
+      title: '章节详情',
       hideNav: true,
       scrollToTop: true
     }
@@ -80,6 +88,7 @@ const routes = [
     name: '404',
     component: () => import('../views/other/NotFoundComponent.vue'),
     meta: {
+      title: '404',
       hideNav: true,
       scrollToTop: true
     }
@@ -117,6 +126,13 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
   scrollBehavior
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.title) {
+    document.title = to.meta.title
+  }
+  next()
 })
 
 // router.beforeEach((to, from, next) => {
