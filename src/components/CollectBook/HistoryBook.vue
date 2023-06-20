@@ -88,7 +88,6 @@ export default {
   },
   methods: {
     getIn() {
-      // console.log(this.$store.state.Login);
       this.his = !this.$store.state.Login;
     },
     getBook() {
@@ -96,7 +95,6 @@ export default {
     },
     // 选择要删除的
     add(value) {
-      console.log("选择漫话id有===>", value);
       // todo: 自己加的，待验证
       this.result.add(value);
     },

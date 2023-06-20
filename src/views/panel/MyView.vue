@@ -133,13 +133,11 @@ export default {
   },
   created() {
     this.getUser();
-    this.getIn();
   },
   methods: {
     async getUser() {
       await this.$axios.get("https://apis.netstart.cn/bcomic/UCenterConf")
         .then((data) => {
-          console.log(data);
           let resData = data.data.data;
           this.activityArr = resData.confs.slice(0, 4);
           this.arr = resData.confs.slice(4, resData.confs.length);
@@ -159,10 +157,6 @@ export default {
           });
         });
     },
-    getIn() {
-      console.log(this.$store.state.Login);
-      // this.log = this.$store.state.Login;
-    },
     changeLog() {
       if (!this.$store.state.Login) {
         this.show = true;
@@ -174,10 +168,9 @@ export default {
       this.$store.commit("changeFlag", true);
     },
     seting() {
-      // console.log(this.$refs.sss.name);
       //设置子组件的数据
       this.$refs.sss.show = true;
-    },
+    }
   }
 };
 </script>

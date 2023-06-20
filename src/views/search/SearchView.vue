@@ -71,7 +71,6 @@ export default {
     // 获取本地储存的数据
     // getHistory() {
     //   let historyWord = localStorage.getItem("searchName");
-    //   console.log(historyWord);
     //   if (historyWord) {
     //     this.componentName = historyWord;
     //   }

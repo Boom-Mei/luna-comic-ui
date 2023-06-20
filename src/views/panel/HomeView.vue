@@ -32,13 +32,12 @@
 
     <!-- 头部导航 -->
     <div class="tablist">
-      <van-tabs @scroll="scrollTop" v-model="active" sticky animated :background="
-        active == '推荐'
-          ? $store.state.recommendColor
-          : active == '热门' && scrolltop < 100
-            ? 'rgba(0,0,0,0)'
-            : '#F8F9F9'
-      " :color="'rgba(0,0,0,0)'" title-active-color="skyblue" title-inactive-color="#303133" :border="false"
+      <van-tabs @scroll="scrollTop" v-model="active" sticky animated :background="active == '推荐'
+        ? $store.state.recommendColor
+        : active == '热门' && scrolltop < 100
+          ? 'rgba(0,0,0,0)'
+          : '#F8F9F9'
+        " :color="'rgba(0,0,0,0)'" title-active-color="skyblue" title-inactive-color="#303133" :border="false"
         @click="onClick" ref="tab">
         <van-tab title="热门" name="热门" class="reMen">
           <hot-nav :bannerList="bannerList" :sex="sex"></hot-nav>
@@ -85,10 +84,9 @@ export default {
   },
   // mounted可以访问DOM元素，适合DOM完全加载后的所有操作
   // mounted() {
-  //   console.log("mounted");
   //   this.getData();
   // },
-  // mounted不可以访问DOM元素，适合访问API
+  // created不可以访问DOM元素，适合访问API
   created() {
     this.getData();
   },
@@ -120,7 +118,7 @@ export default {
       //     pageSize: 3
       //   }
       // })
-      
+
       await this.$axios.get("/banner/list", {
         params: {
           type: 1,
@@ -140,7 +138,6 @@ export default {
       this.sex = title;
     },
     scrollTop(e) {
-      // console.log(e);
       let top = e.scrollTop;
       this.scrolltop = top;
       if (top > 100) {
@@ -154,7 +151,7 @@ export default {
           this.$refs.home.style.backgroundColor = "rgba(0,0,0,0)";
         }
       }
-    },
+    }
   }
 };
 </script>

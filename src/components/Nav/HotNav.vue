@@ -135,8 +135,6 @@ export default {
   },
   watch: {
     "$store.state.hotColor"(n) {
-      // console.log(o,'old');
-      // console.log(n, "new");
       this.imageUrl = n;
     },
   },
@@ -150,7 +148,6 @@ export default {
       }
     },
     async getData(num = 1) {
-      console.log(window.localStorage.getItem('homeActive'));
       await this.$axios.get("/book/list", {
         params: {
           pageNo: num,
@@ -183,9 +180,6 @@ export default {
         .then((data) => {
           this.oneList = data.data.data.dataList;
         });
-    },
-    imgClick(obj) {
-      console.log("img", obj);
     }
   },
   destroyed() {
@@ -193,7 +187,7 @@ export default {
       message: "加载中...",
       forbidClick: true,
     });
-  },
+  }
 };
 </script>
 

@@ -21,24 +21,18 @@ export default {
   },
   methods: {
     async getImage() {
-      console.log("执行没");
       await this.axios
         .get(
-         `
+          `
          ImageToken?urls=["https://manga.hdslb.com/bfs/manga/ae3db294143eb62e1628176fa307216e44c96717.jpg@1000w.webp"]
          `
         )
         .then((re) => {
-          console.log("漫画内容===>", re);
           this.arr = re;
         })
-        .catch((error) => {
-          console.log("请求失败===>", error);
-        });
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>

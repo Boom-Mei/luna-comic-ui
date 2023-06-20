@@ -75,10 +75,9 @@ export default {
         .then((data) => {
           this.searchResult = data.data.data.dataList;
         })
-        .catch((error) => {
+        .catch(() => {
           this.showLoading = false;
           this.flag = false;
-          console.log(error);
         });
     },
     scrollEvent: _.debounce(function () {
@@ -95,7 +94,7 @@ export default {
             this.loadMore();
             this.showLoading = true;
           }
-          // console.log("触底了！！");
+          // 触底了
         }
       }
     }, 300),
@@ -118,10 +117,9 @@ export default {
           }
           this.searchResult.push(...arr);
         })
-        .catch((error) => {
+        .catch(() => {
           this.showLoading = false;
           this.flag = false;
-          console.log(error);
         });
     },
     // 把搜索的关键字存储在本地服务器

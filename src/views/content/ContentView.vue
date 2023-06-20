@@ -252,9 +252,6 @@ export default {
   },
   created() {
     this.getData();
-    // this.$nextTick(() => {
-    //   console.log(this.$refs.activeRef,'activeRef');
-    // });
     this.changeColor();
   },
   mounted() {
@@ -400,10 +397,13 @@ export default {
     // 滚动事件
     scrollShow() {
       // this.show = false;
-      // console.log("滚动事件", this.$refs.ul.scrollHeight,this.$refs.ul.offsetHeight);
+      // 滚动事件
+      // this.$refs.ul.scrollHeight, this.$refs.ul.offsetHeight
       if (this.$refs.ul) {
+        // 卷去高度
         let scrollY = document.documentElement.scrollTop;
         let move = (scrollY * 100) / this.$refs.ul.offsetHeight;
+        // 可视化窗口高度
         // let heightMove = document.documentElement.clientHeight;
         if (scrollY == 0) {
           this.progressBar = 0;
@@ -412,10 +412,7 @@ export default {
           this.progressBar = move;
         }
       }
-      // console.log("可视化窗口高度==>", heightMove);
-      // console.log("卷去高度==>", scrollY, e.target);
-      // console.log("可视化窗口高度+卷去高度==>", heightMove + scrollY);
-      // console.log("到底部==>", this.$refs.ul.offsetHeight + 50);
+      // 到底部: this.$refs.ul.offsetHeight + 50
     },
     // 分享
     onSelect(option) {
@@ -427,7 +424,6 @@ export default {
       this.show = false;
     },
     // onChange(value) {
-    //   console.log("拖动滑块结束后~~", value);
     // },
     onChange() {
     },

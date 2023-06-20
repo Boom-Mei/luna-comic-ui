@@ -77,8 +77,7 @@ export default {
       this.types = newType;
       this.getData(this.types);
     },
-    sex(newType) {
-      console.log(newType);
+    sex() {
       this.getData();
     }
   },

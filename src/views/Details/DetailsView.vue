@@ -267,18 +267,6 @@ export default {
       text: "开始阅读"
     };
   },
-  // beforeRouteEnter(to, from, next) {
-  //   console.log("------");
-  //   console.log(to, from);
-  //   let name = from.name;
-  //   if (name == "content") {
-  //     next();
-  //     return;
-  //   }
-  //   localStorage.setItem("beforeName", name);
-  //   console.log("------");
-  //   next();
-  // },
   created() {
     this.getData();
     this.check();
@@ -387,7 +375,6 @@ export default {
           if (num != undefined) {
             this.num = data.data.data.total;
           }
-          // console.log("漫画评论===>", this.commentList);
         });
     },
     // 判断是否看过这本书
