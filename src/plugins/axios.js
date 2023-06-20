@@ -113,7 +113,7 @@ axios.interceptors.response.use(function (response) {
     return Promise.reject(message)
   }
   // error ret: 24
-  if (data != null && data.ret != 814) {
+  if (data && data.ret && data.ret != 814) {
     // reject里面就是catch中的error对象
     return Promise.reject(data)
   }
