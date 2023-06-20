@@ -6,10 +6,10 @@
     <div style="height: 1px"></div>
     <div class="banner" v-if="bannerList" :style="{ '--background': 'url(' + imageUrl + ')' }">
       <carousel-3d :autoplayTimeout="3000" :perspective="20" :animationSpeed="500" autoplay width="230" height="310"
-        startIndex="3" @before-slide-change="onSlideChange" ref="carouser">
-        <slide v-for="(item, i) in bannerList" :index="i" :key="item.id" class="item3d">
-          <router-link :to="`/details/${item.bookId}`">
-            <img :src="item.picUrl" class="img" v-lazy="item.picUrl" />
+        startIndex="0" @before-slide-change="onSlideChange" ref="carouser">
+        <slide v-for="(banner, i) in bannerList" :index="i" :key="banner.id" class="item3d">
+          <router-link :to="`/details/${banner.bookId}`">
+            <img :src="banner.picUrl" class="img" v-lazy="banner.picUrl" />
           </router-link>
         </slide>
       </carousel-3d>
@@ -31,7 +31,7 @@
       </router-link>
 
       <!-- 换一批 -->
-      <div class="iconfont icon-huanyipi" @click.stop="getData(Math.floor(Math.random() * 8))">
+      <div class="iconfont icon-huanyipi" @click.stop="getHot(Math.floor(Math.random() * 108))">
         &nbsp;&nbsp;换一批
       </div>
     </ul>
@@ -86,7 +86,7 @@
       </router-link>
 
       <!-- 换一批 -->
-      <div class="iconfont icon-huanyipi" @click.stop="getOne(Math.floor(Math.random() * 8))">
+      <div class="iconfont icon-huanyipi" @click.stop="getOne(Math.floor(Math.random() * 108))">
         &nbsp;&nbsp;换一批
       </div>
     </ul>
@@ -131,14 +131,12 @@ export default {
   },
   created() {
     this.getData();
-    this.getOne();
   },
   watch: {
     "$store.state.hotColor"(n) {
       this.imageUrl = n;
     },
   },
-
   methods: {
     onSlideChange(e) {
       let hotColor = this.bannerList[e].image_url;
@@ -147,7 +145,12 @@ export default {
         this.$store.commit("changeHotColor", hotColor);
       }
     },
-    async getData(num = 1) {
+    async getData() {
+      this.getHot();
+      this.getNew();
+      this.getOne();
+    },
+    async getHot(num = 1) {
       await this.$axios.get("/book/list", {
         params: {
           pageNo: num,
@@ -157,6 +160,8 @@ export default {
         .then((data) => {
           this.hotList = data.data.data.dataList;
         });
+    },
+    async getNew(num = 1) {
       await this.$axios.get("/book/list", {
         params: {
           pageNo: num,
@@ -168,9 +173,6 @@ export default {
         });
     },
     async getOne(num = 1) {
-      if (num === 0) {
-        num = 1;
-      }
       await this.$axios.get("/book/list", {
         params: {
           pageNo: num,
@@ -182,12 +184,12 @@ export default {
         });
     }
   },
-  destroyed() {
-    this.$toast.loading({
-      message: "加载中...",
-      forbidClick: true,
-    });
-  }
+  // destroyed() {
+  //   this.$toast.loading({
+  //     message: "加载中...",
+  //     forbidClick: true,
+  //   });
+  // }
 };
 </script>
 
