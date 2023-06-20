@@ -51,7 +51,7 @@ const routes = [
     }
   },
   {
-    path: '/all/:allid/:allname',
+    path: '/all/:allName',
     name: 'all',
     props: true,
     component: () => import('@/views/All/AllView.vue'),

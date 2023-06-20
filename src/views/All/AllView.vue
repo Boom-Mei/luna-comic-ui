@@ -3,7 +3,7 @@
     <!-- <h3>查看全部</h3> -->
 
     <van-sticky>
-      <van-nav-bar :title="allname" left-text="返回" left-arrow @click-left="onClickLeft" class="title_top"
+      <van-nav-bar :title="allName" left-text="返回" left-arrow @click-left="onClickLeft" class="title_top"
         :border="false" />
     </van-sticky>
     <ul v-if="allList" class="all_main">
@@ -30,8 +30,8 @@
       v-else>加载中...
     </van-loading>
     <div class="bottom_tab">
-      <van-pagination v-if="allList.length" v-model="currentPage" :total-items="24" :items-per-page="5"
-        @change="changeDate" @black="'#000'" />
+      <van-pagination v-if="allList.length" v-model="currentPage" mode="simple" :page-count="pages" :total-items="total"
+        :items-per-page="pageSize" @change="changeDate" @black="'#000'" />
     </div>
   </div>
 </template>
@@ -39,22 +39,29 @@
 <script>
 export default {
   props: {
-    allid: {
-      type: String,
-      default: "0"
-    },
-    allname: {
+    allName: {
       type: String,
       default: "全部"
     }
   },
   data() {
     return {
+      allowName: ["全部", "今日热门速递", "1V1超甜狗粮"],
       allList: [],
-      currentPage: 1
+      currentPage: 1,
+      pageSize: 10,
+      pages: 0,
+      total: 0
     };
   },
   created() {
+    document.title = this.allName;
+    if (!this.allowName.includes(this.allName)) {
+      this.$router.replace({
+        name: "404"
+      });
+      return;
+    }
     this.getData();
   },
   // mounted() {
@@ -74,17 +81,15 @@ export default {
       this.$axios.get("/book/list", {
         params: {
           pageNo: this.currentPage,
-          pageSize: 10
+          pageSize: this.pageSize
         }
       })
         .then((data) => {
-          this.allList = data.data.data.dataList;
+          let respnseData = data.data.data;
+          this.allList = respnseData.dataList;
+          this.pages = respnseData.pages;
+          this.total = respnseData.total;
         })
-        .catch(() => {
-          this.$router.replace({
-            name: "404"
-          });
-        });
     },
     // 返回
     onClickLeft() {
@@ -152,6 +157,11 @@ export default {
         }
 
         span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
           font-size: 13px;
           color: gray;
         }

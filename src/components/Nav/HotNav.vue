@@ -17,7 +17,7 @@
     <!-- 今日热门速递 -->
     <div class="hot">
       <h3>今日热门速递</h3>
-      <router-link tag="p" to="/all/1012/今日热门速递">查看全部>></router-link>
+      <router-link tag="p" to="/all/今日热门速递">查看全部>></router-link>
     </div>
     <ul v-if="hotList.length" class="hot_main">
       <router-link tag="li" :to="`/details/${hot.id}`" v-for="hot in hotList" :key="hot.id">
@@ -71,7 +71,7 @@
     <!-- 1v1超甜狗粮 -->
     <div class="hot">
       <h3>1v1超甜狗粮</h3>
-      <router-link tag="p" to="/all/1065/1V1超甜狗粮">查看全部>></router-link>
+      <router-link tag="p" to="/all/1V1超甜狗粮">查看全部>></router-link>
     </div>
 
     <ul v-if="oneList" class="hot_main">
