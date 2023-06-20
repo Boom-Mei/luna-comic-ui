@@ -9,18 +9,16 @@
           class="item">
           <a tag="a" :href="banner.jumpUrl" v-if="banner.jumpUrl" class="box">
             <van-image :src="banner.picUrl" class="img">
-              <template v-slot:loading>
-                <!-- <van-loading type="spinner" size="20" /> -->
+              <!-- <template v-slot:loading>
                 <img src="@/assets/image/没有.png" />
-              </template>
+              </template> -->
             </van-image>
           </a>
           <router-link v-else tag="a" :to="`/details/${banner.bookId}`" class="box">
             <van-image :src="banner.picUrl" class="img">
-              <template v-slot:loading>
-                <!-- <van-loading type="spinner" size="20" /> -->
+              <!-- <template v-slot:loading>
                 <img src="@/assets/image/没有.png" />
-              </template>
+              </template> -->
             </van-image>
           </router-link>
         </van-swipe-item>

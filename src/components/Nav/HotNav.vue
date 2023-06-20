@@ -22,9 +22,9 @@
     <ul v-if="hotList.length" class="hot_main">
       <router-link tag="li" :to="`/details/${hot.id}`" v-for="hot in hotList" :key="hot.id">
         <van-image :src="hot.coverUrl" radius="5px">
-          <template v-slot:loading>
+          <!-- <template v-slot:loading>
             <van-loading type="spinner" size="20" />
-          </template>
+          </template> -->
         </van-image>
         <p>{{ hot.bookName }}</p>
         <span>{{ "更新至" + hot.chapterCount + "话" }}</span>
@@ -49,9 +49,9 @@
         <div class="num">No.{{ index + 1 }}</div>
         <div class="img">
           <van-image :src="newitem.coverUrl" radius="5px">
-            <template v-slot:loading>
+            <!-- <template v-slot:loading>
               <van-loading type="spinner" size="20" />
-            </template>
+            </template> -->
           </van-image>
         </div>
         <p>{{ newitem.bookName }}</p>
@@ -77,9 +77,9 @@
     <ul v-if="oneList" class="hot_main">
       <router-link tag="li" :to="`/details/${one.id}`" v-for="one in oneList" :key="one.id">
         <van-image :src="one.coverUrl" radius="5px">
-          <template v-slot:loading>
+          <!-- <template v-slot:loading>
             <van-loading type="spinner" size="20" />
-          </template>
+          </template> -->
         </van-image>
         <p>{{ one.bookName }}</p>
         <span>{{ "更新至" + one.chapterCount + "话" }}</span>

@@ -15,10 +15,9 @@
     <!-- 封面图 -->
     <div class="cover">
       <van-image :src="bookDetail.coverUrl">
-        <template v-slot:loading>
-          <!-- <van-loading type="spinner" size="20" /> -->
+        <!-- <template v-slot:loading>
           <img src="@/assets/image/加载失败.png" style="width: 375px,height: 200px" />
-        </template>
+        </template> -->
       </van-image>
       <!-- 追漫按钮 -->
       <div :class="['chase', { yes: flag }, { no: !flag }]" @click.stop="chase(bookDetail)">

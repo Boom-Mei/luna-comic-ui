@@ -9,9 +9,9 @@
     <ul v-if="bookList.length" class="todo">
       <router-link tag="li" :to="`/details/${book.id}`" v-for="book in bookList" :key="book.id">
         <van-image :src="book.coverUrl" fit="cover" radius="5px" width="120" height="138">
-          <template v-slot:loading>
+          <!-- <template v-slot:loading>
             <img src="@/assets/image/没有.png" class="loadImg" />
-          </template>
+          </template> -->
         </van-image>
         <!-- <img
           :src="book.coverUrl"
